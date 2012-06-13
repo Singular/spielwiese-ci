@@ -1082,6 +1082,7 @@ static inline poly leadmonom(const poly p, const ring r)
 /// proc SSFindReducer(def product, def syzterm, def L, def T, list #)
 static BOOLEAN FindReducer(leftv res, leftv h)
 {
+  const char* usage = "`FindReducer(<poly/vector>, <vector/0>, <ideal/module>[,<module>])` expected";
   const ring r = currRing;
 
   NoReturn(res);
@@ -1094,23 +1095,20 @@ static BOOLEAN FindReducer(leftv res, leftv h)
 #endif
 
   const BOOLEAN __TAILREDSYZ__ = (BOOLEAN)((long)(atGet(currRingHdl,"TAILREDSYZ",INT_CMD, (void*)0)));
-  const BOOLEAN __LEAD2SYZ__ = (BOOLEAN)((long)(atGet(currRingHdl,"LEAD2SYZ",INT_CMD, (void*)0)));
-  const BOOLEAN __SYZCHECK__ = (BOOLEAN)((long)(atGet(currRingHdl,"SYZCHECK",INT_CMD, (void*)0)));   
 
   if ((h==NULL) || (h->Typ()!=VECTOR_CMD && h->Typ() !=POLY_CMD) || (h->Data() == NULL))
   {
-    WerrorS("`FindReducer(<poly/vector>, <vector>, <ideal/module>[,<module>])` expected");
+    WerrorS(usage);
     return TRUE;    
   }
     
-  const poly product = (poly) h->Data(); h = h->Next();
+  const poly product = (poly) h->Data(); assume (product != NULL);
 
-  assume (product != NULL);
 
-    
-  if ((h==NULL) || (h->Typ()!=VECTOR_CMD))
+  h = h->Next();
+  if ((h==NULL) || !((h->Typ()==VECTOR_CMD) || (h->Data() == NULL)) )
   {
-    WerrorS("`FindReducer(<poly/vector>, <vector>, <ideal/module>[,<module>])` expected");
+    WerrorS(usage);
     return TRUE;    
   }
 
@@ -1124,7 +1122,7 @@ static BOOLEAN FindReducer(leftv res, leftv h)
   
   if ((h==NULL) || (h->Typ()!=IDEAL_CMD && h->Typ() !=MODUL_CMD) || (h->Data() == NULL))
   {
-    WerrorS("`FindReducer(<poly/vector>, <vector>, <ideal/module>[,<module>])` expected");
+    WerrorS(usage);
     return TRUE;    
   }
   
@@ -1137,7 +1135,7 @@ static BOOLEAN FindReducer(leftv res, leftv h)
 /*
   if ((h==NULL) || (h->Typ()!=IDEAL_CMD && h->Typ() !=MODUL_CMD) || (h->Data() == NULL))
   {
-    WerrorS("`FindReducer(<poly/vector>, <vector>, <ideal/module>[,<module>])` expected");
+    WerrorS(usage);
     return TRUE;    
   }
 
@@ -1540,68 +1538,67 @@ BOOLEAN rGetAMPos(const ring r, const int p, int &typ_pos, int &wvhdl_pos, const
   return FALSE;
 }
 
-
-/// ?
-static BOOLEAN GetAMData(leftv res, leftv h)
-{
-  NoReturn(res);
-
-  const ring r = currRing;
-
-  int p = 0; // which IS-block? p^th!
-
-  if ((h!=NULL) && (h->Typ()==INT_CMD))
-    p = (int)((long)(h->Data())); h=h->next;
-
-  assume(p >= 0);
-
-  int d, w;
-  
-  if( !rGetAMPos(r, p, d, w, TRUE) )
-  {
-    Werror("`GetAMData([int])`: no %d^th _am block-ordering!", p);
-    return TRUE;
-  }
-
-  assume( r->typ[d].ord_typ == ro_am );
-  assume( r->order[w] == ringorder_am );
-
-
-  const short start = r->typ[d].data.am.start;  // bounds of ordering (in E)
-  const short end = r->typ[d].data.am.end;
-  const short len_gen = r->typ[d].data.am.len_gen; // i>len_gen: weight(gen(i)):=0
-  const int *weights = r->typ[d].data.am.weights; // pointers into wvhdl field of length (end-start+1) + len_gen
-  // contents w_1,... w_n, len, mod_w_1, .. mod_w_len, 0
-
-  assume( weights == r->wvhdl[w] );
-
-  
-  lists l=(lists)omAllocBin(slists_bin);
-  l->Init(2);
-
-  const short V = end-start+1;
-  intvec* ww_vars = new intvec(V);
-  intvec* ww_gens = new intvec(len_gen);
-
-  for (int i = 0; i < V; i++ )
-    (*ww_vars)[i] = weights[i];
-
-  assume( weights[V] == len_gen );
-
-  for (int i = 0; i < len_gen; i++ )
-    (*ww_gens)[i] = weights[i - V - 1];
-  
-
-  l->m[0].rtyp = INTVEC_CMD;
-  l->m[0].data = reinterpret_cast<void *>(ww_vars);
-
-  l->m[1].rtyp = INTVEC_CMD;
-  l->m[1].data = reinterpret_cast<void *>(ww_gens);
-
-
-  return FALSE;
-
-}
+// // ?
+// static BOOLEAN GetAMData(leftv res, leftv h)
+// {
+//   NoReturn(res);
+// 
+//   const ring r = currRing;
+// 
+//   int p = 0; // which IS-block? p^th!
+// 
+//   if ((h!=NULL) && (h->Typ()==INT_CMD))
+//     p = (int)((long)(h->Data())); h=h->next;
+// 
+//   assume(p >= 0);
+// 
+//   int d, w;
+//   
+//   if( !rGetAMPos(r, p, d, w, TRUE) )
+//   {
+//     Werror("`GetAMData([int])`: no %d^th _am block-ordering!", p);
+//     return TRUE;
+//   }
+// 
+//   assume( r->typ[d].ord_typ == ro_am );
+//   assume( r->order[w] == ringorder_am );
+// 
+// 
+//   const short start = r->typ[d].data.am.start;  // bounds of ordering (in E)
+//   const short end = r->typ[d].data.am.end;
+//   const short len_gen = r->typ[d].data.am.len_gen; // i>len_gen: weight(gen(i)):=0
+//   const int *weights = r->typ[d].data.am.weights; // pointers into wvhdl field of length (end-start+1) + len_gen
+//   // contents w_1,... w_n, len, mod_w_1, .. mod_w_len, 0
+// 
+//   assume( weights == r->wvhdl[w] );
+// 
+//   
+//   lists l=(lists)omAllocBin(slists_bin);
+//   l->Init(2);
+// 
+//   const short V = end-start+1;
+//   intvec* ww_vars = new intvec(V);
+//   intvec* ww_gens = new intvec(len_gen);
+// 
+//   for (int i = 0; i < V; i++ )
+//     (*ww_vars)[i] = weights[i];
+// 
+//   assume( weights[V] == len_gen );
+// 
+//   for (int i = 0; i < len_gen; i++ )
+//     (*ww_gens)[i] = weights[i - V - 1];
+//   
+// 
+//   l->m[0].rtyp = INTVEC_CMD;
+//   l->m[0].data = reinterpret_cast<void *>(ww_vars);
+// 
+//   l->m[1].rtyp = INTVEC_CMD;
+//   l->m[1].data = reinterpret_cast<void *>(ww_gens);
+// 
+// 
+//   return FALSE;
+// 
+// }
 
 
 /// Returns old SyzCompLimit, can set new limit
@@ -1724,7 +1721,7 @@ static BOOLEAN reduce_syz(leftv res, leftv h)
   if ( ( (h!=NULL) && (h->Typ()== INT_CMD)  ) )
     iLazyReduce = (int)((long)(h->Data())); 
 
-  res->data = (void *)kNFLength(M, currQuotient, v, iSyzComp, iLazyReduce);
+  res->data = (void *)kNFLength(M, currQuotient, v, iSyzComp, iLazyReduce); // NOTE: currRing :(
   return FALSE;
 }
 
@@ -1842,7 +1839,7 @@ static BOOLEAN _p_Content(leftv res, leftv h)
   pWrite(p); PrintLn();
   
   NoReturn(res);
-  return false;
+  return FALSE;
 }
 
 static BOOLEAN _m2_end(leftv res, leftv h)
