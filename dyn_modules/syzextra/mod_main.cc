@@ -498,6 +498,8 @@ static BOOLEAN Tail(leftv res, leftv h)
         else
           newid->m[i] = NULL;
       
+      newid->rank = id_RankFreeModule(newid, currRing);
+      
       res->data = newid; 
     }
     
@@ -785,7 +787,7 @@ static BOOLEAN Sort_c_ds(leftv res, leftv h)
   assume( h != NULL );  
 
 #ifndef NDEBUG
-  const BOOLEAN __DEBUG__ = (BOOLEAN)((long)(atGet(currRingHdl,"DEBUG",INT_CMD, (void*)TRUE)));
+  const BOOLEAN __DEBUG__ = (BOOLEAN)((long)(atGet(currRingHdl,"DEBUG",INT_CMD, (void*)FALSE)));
 #else
   const BOOLEAN __DEBUG__ = (BOOLEAN)((long)(atGet(currRingHdl,"DEBUG",INT_CMD, (void*)FALSE)));
 #endif
@@ -1412,6 +1414,10 @@ static BOOLEAN SchreyerSyzygyNF(leftv res, leftv h)
 //  const BOOLEAN __LEAD2SYZ__ = (BOOLEAN)((long)(atGet(currRingHdl,"LEAD2SYZ",INT_CMD, (void*)0)));
   const BOOLEAN __SYZCHECK__ = (BOOLEAN)((long)(atGet(currRingHdl,"SYZCHECK",INT_CMD, (void*)0)));   
 
+  const BOOLEAN __HYBRIDNF__ = (BOOLEAN)((long)(atGet(currRingHdl,"HYBRIDNF",INT_CMD, (void*)0)));
+
+  assume( __HYBRIDNF__ );
+  
   if ((h==NULL) || (h->Typ() != VECTOR_CMD) || (h->Data() == NULL))
   {
     WerrorS(usage);
@@ -1943,6 +1949,8 @@ static BOOLEAN GetInducedData(leftv res, leftv h)
   const ideal F = r->typ[pos].data.is.F;
   ideal FF = id_Copy(F, r);
 
+
+  
   lists l=(lists)omAllocBin(slists_bin);
   l->Init(2);
 
