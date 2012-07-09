@@ -55,6 +55,7 @@ USING_NAMESPACE( SINGULARXXNAME :: DEBUG )
 
 BEGIN_NAMESPACE_SINGULARXX     BEGIN_NAMESPACE(SYZEXTRA)
 
+
 BEGIN_NAMESPACE(SORT_c_ds)
 
 
@@ -222,6 +223,7 @@ void Sort_c_ds(const ideal id, const ring r)
 }
 
 
+BEGIN_NAMESPACE(INTERNAL)
 
 ideal ComputeLeadingSyzygyTerms(const ideal& id, const ring r)
 {
@@ -790,7 +792,7 @@ void ComputeSyzygy(const ideal L, const ideal T, ideal& LL, ideal& TT, const rin
   TT->rank = id_RankFreeModule(TT, R);
 }
 
-
+END_NAMESPACE
 
 
 
