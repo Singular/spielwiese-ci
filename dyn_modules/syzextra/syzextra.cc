@@ -795,8 +795,43 @@ void ComputeSyzygy(const ideal L, const ideal T, ideal& LL, ideal& TT, const rin
 END_NAMESPACE
 
 
+void SchreyerSyzygyComputation::ComputeSyzygy()
+{
+  /// assumes m_syzLeads == m_syzTails == NULL!
+  INTERNAL::ComputeSyzygy(m_idLeads, m_idTails, m_syzLeads, m_syzTails, m_rBaseRing); // TODO: just a wrapper for now :/
+}
 
+void SchreyerSyzygyComputation::ComputeLeadingSyzygyTerms(bool bComputeSecondTerms)
+{
+  if( bComputeSecondTerms )
+    m_syzLeads = INTERNAL::Compute2LeadingSyzygyTerms(m_idLeads, m_rBaseRing);
+  else
+    m_syzLeads = INTERNAL::ComputeLeadingSyzygyTerms(m_idLeads, m_rBaseRing);
+  
+  // NOTE: set m_LS if tails are to be reduced!
+}
 
+poly SchreyerSyzygyComputation::FindReducer(poly product, poly syzterm)
+{
+  return INTERNAL::FindReducer(product, syzterm, m_idLeads, m_LS, m_rBaseRing);
+}
+
+poly SchreyerSyzygyComputation::SchreyerSyzygyNF(poly syz_lead, poly syz_2)
+{
+  return INTERNAL::SchreyerSyzygyNF(syz_lead, syz_2, m_idLeads, m_idTails, m_LS, m_rBaseRing);
+}
+
+poly SchreyerSyzygyComputation::TraverseTail(poly multiplier, poly tail)
+{
+  return INTERNAL::TraverseTail(multiplier, tail, m_idLeads, m_idTails, m_LS, m_rBaseRing);
+}
+
+poly SchreyerSyzygyComputation::ReduceTerm(poly multiplier, poly term4reduction, poly syztermCheck)
+{
+  return INTERNAL::ReduceTerm(multiplier, term4reduction, syztermCheck, m_idLeads, m_idTails, m_LS, m_rBaseRing);
+}
+
+   
 
 
 END_NAMESPACE               END_NAMESPACE_SINGULARXX

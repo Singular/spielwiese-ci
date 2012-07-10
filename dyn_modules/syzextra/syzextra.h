@@ -50,37 +50,6 @@ ideal id_Tail(const ideal id, const ring r);
 void Sort_c_ds(const ideal id, const ring r);
 
 
-
-// all the following internal functions should be hidden by moving
-// them into SchreyerSyzygyComputation
-
-BEGIN_NAMESPACE(INTERNAL)
-
-void ComputeSyzygy(const ideal L, const ideal T, ideal& LL, ideal& TT, const ring R);
-
-ideal ComputeLeadingSyzygyTerms(const ideal& id, const ring r);
-ideal Compute2LeadingSyzygyTerms(const ideal& id, const ring r);
-
-
-
-poly FindReducer(poly product, poly syzterm,
-                 ideal L, ideal LS,
-                 const ring r);
-
-
-
-poly TraverseTail(poly multiplier, poly tail, 
-                  ideal L, ideal T, ideal LS,
-                  const ring r);
-
-poly ReduceTerm(poly multiplier, poly term4reduction, poly syztermCheck,
-                ideal L, ideal T, ideal LS, const ring r);
-
-
-poly SchreyerSyzygyNF(poly syz_lead, poly syz_2, ideal L, ideal T, ideal LS, const ring r);
-
-END_NAMESPACE
-
 /** @class SchreyerSyzygyComputation syzextra.h
  * 
  * Computing syzygies after Schreyer
@@ -109,13 +78,6 @@ class SchreyerSyzygyComputation
     /// Destructor should not destruct the resulting m_syzLeads, m_syzTails. 
     ~SchreyerSyzygyComputation(){ CleanUp(); }
 
-    /// The main driver function: computes
-    inline void ComputeSyzygy()
-    {
-      /// assumes m_syzLeads == m_syzTails == NULL!
-      INTERNAL::ComputeSyzygy(m_idLeads, m_idTails, m_syzLeads, m_syzTails, m_rBaseRing); // TODO: just a wrapper for now :/
-    }
-
     /// Read off the results while detaching them from this object
     /// NOTE: no copy!
     inline void ReadOffResult(ideal& syzL, ideal& syzT)
@@ -125,37 +87,18 @@ class SchreyerSyzygyComputation
       m_syzLeads = m_syzTails = NULL; // m_LS ?
     }
     
+    /// The main driver function: computes
+    void ComputeSyzygy();
+
     /// Computes Syz(leads) or only LEAD of it.
     /// The result is stored into m_syzLeads
-    inline void ComputeLeadingSyzygyTerms(bool bComputeSecondTerms = true)
-    {
-      if( bComputeSecondTerms )
-        m_syzLeads = INTERNAL::Compute2LeadingSyzygyTerms(m_idLeads, m_rBaseRing);
-      else
-        m_syzLeads = INTERNAL::ComputeLeadingSyzygyTerms(m_idLeads, m_rBaseRing);
+    void ComputeLeadingSyzygyTerms(bool bComputeSecondTerms = true);
 
-      // NOTE: set m_LS if tails are to be reduced!
-    }
+    poly FindReducer(poly product, poly syzterm);
+    poly SchreyerSyzygyNF(poly syz_lead, poly syz_2);
+    poly TraverseTail(poly multiplier, poly tail);
+    poly ReduceTerm(poly multiplier, poly term4reduction, poly syztermCheck);
 
-    inline poly FindReducer(poly product, poly syzterm)
-    {
-      return INTERNAL::FindReducer(product, syzterm, m_idLeads, m_LS, m_rBaseRing);
-    }
-
-    inline poly SchreyerSyzygyNF(poly syz_lead, poly syz_2)
-    {
-      return INTERNAL::SchreyerSyzygyNF(syz_lead, syz_2, m_idLeads, m_idTails, m_LS, m_rBaseRing);
-    }
-
-    inline poly TraverseTail(poly multiplier, poly tail)
-    {
-      return INTERNAL::TraverseTail(multiplier, tail, m_idLeads, m_idTails, m_LS, m_rBaseRing);
-    }
-
-    inline poly ReduceTerm(poly multiplier, poly term4reduction, poly syztermCheck)
-    {
-      return INTERNAL::ReduceTerm(multiplier, term4reduction, syztermCheck, m_idLeads, m_idTails, m_LS, m_rBaseRing);
-    }
     
   protected:
     
