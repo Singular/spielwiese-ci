@@ -459,11 +459,13 @@ void SchreyerSyzygyComputation::SetUpTailTerms()
     }
 
 #ifndef NDEBUG
+  if( !__TREEOUTPUT__ )
   if( TEST_OPT_PROT | 1)
     Print("%%      **!!**      SchreyerSyzygyComputation::SetUpTailTerms()::PreProcessing(): X: {c: %lu, C: %lu, P: %lu} + %lu\n", pp[1], pp[2], pp[3], pp[0]);
 #endif
    
 #ifndef NDEBUG
+  if( !__TREEOUTPUT__ )
   if( __DEBUG__ | 0)
   {
     PrintS("SchreyerSyzygyComputation::SetUpTailTerms(): Preprocessed Tails: \n");
@@ -780,8 +782,8 @@ poly SchreyerSyzygyComputation::TraverseNF(const poly a, const poly a2) const
 
   if( __TREEOUTPUT__ )
   {
-     PrintS("%%%% BEGIN LIFTPART DIAGRAMM\n");
-     PrintS("\\begin{ROOTTREE}{"); dPrint(a, R, R, 0);PrintS("}");
+//     PrintS("%%%% BEGIN LIFTPART DIAGRAMM\n");
+     PrintS("{   \"nodelabel\": \""); dPrint(a, R, R, 0);PrintS("\", \"children\": [");
 //    PrintS("\\ROOTRESULT{"); dPrint(t, R, R, 0); PrintS("}");	
 //     PrintS("\\end{ROOTTREE}\n");
   }
@@ -800,7 +802,7 @@ poly SchreyerSyzygyComputation::TraverseNF(const poly a, const poly a2) const
     if( __TREEOUTPUT__ )
     {
 //       PrintS("\\CONSIDERTERM{"); dPrint(spoly, r, r, 0); PrintS("}\n");
-       PrintS("\\CHILDNODE{"); dPrint(a2, R, R, 0); PrintS("}\n");
+//       PrintS("{ \"nodelabel\": \""); dPrint(a2, R, R, 0); PrintS("\"");
     }
      
     t = p_Add_q(a2, p_Add_q(t, TraverseTail(aa2, r2), R), R); 
@@ -813,8 +815,8 @@ poly SchreyerSyzygyComputation::TraverseNF(const poly a, const poly a2) const
    
   if( __TREEOUTPUT__ )
   {   
-    PrintS("\\ROOTRESULT{"); dPrint(t, R, R, 0); PrintS("}");	
-    PrintS("\\end{ROOTTREE}\n");
+//    PrintS("\\ROOTRESULT{"); dPrint(t, R, R, 0); PrintS("}");	
+    PrintS("]}, ");
   }
    
      
@@ -845,10 +847,17 @@ void SchreyerSyzygyComputation::ComputeSyzygy()
 #ifndef NDEBUG
   int t, r; 
 #endif
+
+  if( __TREEOUTPUT__ )
+  {
+//    PrintS("{ \"resolutionData\": { \"ring\": \"???\", \"input\": \"<?,?,?>\" }, \"syzygiesLayers\": [");
+    Print("{ \"layer\": \"%d\", \"diagrams\": [", __SYZNUMBER__);
+  }  
    
   if( m_syzLeads == NULL )
   {   
 #ifndef NDEBUG
+    if( !__TREEOUTPUT__ )
     if( TEST_OPT_PROT | 1)
     {
       t = getTimer(); r = getRTimer();
@@ -857,6 +866,7 @@ void SchreyerSyzygyComputation::ComputeSyzygy()
 #endif     
     ComputeLeadingSyzygyTerms( __LEAD2SYZ__ && !__IGNORETAILS__ ); // 2 terms OR 1 term!
 #ifndef NDEBUG
+    if( !__TREEOUTPUT__ )
     if( TEST_OPT_PROT | 1)
     {
       t = getTimer() - t; r = getRTimer() - r;
@@ -883,6 +893,7 @@ void SchreyerSyzygyComputation::ComputeSyzygy()
     if( T != NULL )
     {
 #ifndef NDEBUG
+      if( !__TREEOUTPUT__ )
       if( TEST_OPT_PROT | 1 )
       {
         t = getTimer(); r = getRTimer();
@@ -892,6 +903,7 @@ void SchreyerSyzygyComputation::ComputeSyzygy()
        
       SetUpTailTerms();
 #ifndef NDEBUG
+      if( !__TREEOUTPUT__ )
       if( TEST_OPT_PROT | 1)
       {
         t = getTimer() - t; r = getRTimer() - r;
@@ -902,6 +914,7 @@ void SchreyerSyzygyComputation::ComputeSyzygy()
   }
 
 #ifndef NDEBUG
+  if( !__TREEOUTPUT__ )
   if( TEST_OPT_PROT | 1)
   {
     t = getTimer(); r = getRTimer();
@@ -939,7 +952,15 @@ void SchreyerSyzygyComputation::ComputeSyzygy()
       TT->m[k] = TraverseNF(a, a2);
   }
 
+  if( __TREEOUTPUT__ )
+  {
+//    PrintS("{ \"resolutionData\": { \"ring\": \"???\", \"input\": \"<?,?,?>\" }, \"syzygiesLayers\": [");
+    PrintS("] }\n");
+  }  
+
+  
 #ifndef NDEBUG
+  if( !__TREEOUTPUT__ )
   if( TEST_OPT_PROT | 1)
   {
     t = getTimer() - t; r = getRTimer() - r;
@@ -1010,8 +1031,8 @@ poly SchreyerSyzygyComputation::SchreyerSyzygyNF(const poly syz_lead, poly syz_2
 
   if( __TREEOUTPUT__ )
   {
-     PrintS("%%%% BEGIN LIFTHYBRID DIAGRAMM\n");
-     PrintS("\\begin{ROOTTREE}{"); dPrint(syz_lead, r, r, 0); PrintS("}");
+//     PrintS("%%%% BEGIN LIFTHYBRID DIAGRAMM\n");
+    PrintS("{   \"nodelabel\": \""); dPrint(syz_lead, r, r, 0);PrintS("\", \"children\": [");
   }
    
   if( syz_2 == NULL )
@@ -1023,13 +1044,19 @@ poly SchreyerSyzygyComputation::SchreyerSyzygyNF(const poly syz_lead, poly syz_2
 
 #if NOPRODUCT
     syz_2 = m_div.FindReducer(syz_lead, L->m[rr], syz_lead, m_checker);
+
+    if( __TREEOUTPUT__ )
+    {
+      PrintS("{\"nodelabel\": \""); dPrint(syz_2, r, r, 0);PrintS("\"}, ");
+    }
 #else    
     poly aa = leadmonom(syz_lead, r); assume( aa != NULL); // :(
     aa = p_Mult_mm(aa, L->m[rr], r);
 
     if( __TREEOUTPUT__ )
     {
-      PrintS("\\CONSIDERTERM{"); dPrint(aa, r, r, 0); PrintS("}\n");
+//      PrintS("\\CONSIDERTERM{"); dPrint(aa, r, r, 0); PrintS("}\n");
+      PrintS("{\"nodelabel\": \""); dPrint(syz_2, r, r, 0); PrintS("\", \"edgelable\": \""); dPrint(aa, r, r, 0); PrintS("\"}, ");
     }
      
     syz_2 = m_div.FindReducer(aa, syz_lead, m_checker);
@@ -1043,7 +1070,7 @@ poly SchreyerSyzygyComputation::SchreyerSyzygyNF(const poly syz_lead, poly syz_2
 
   if( __TREEOUTPUT__ )
   {
-    PrintS("\\CHILDNODE{"); dPrint(syz_2, r, r, 0); PrintS("}\n");
+//    PrintS("\\CHILDNODE{"); dPrint(syz_2, r, r, 0); PrintS("}\n");
   }
   
   assume( syz_2 != NULL );
@@ -1105,8 +1132,9 @@ poly SchreyerSyzygyComputation::SchreyerSyzygyNF(const poly syz_lead, poly syz_2
        
       if( __TREEOUTPUT__ )
       {
-         PrintS("\\CONSIDERTERM{"); dPrint(spoly, r, r, 0); PrintS("}\n");
-         PrintS("\\CHILDNODE{"); dPrint(t, r, r, 0); PrintS("}\n");
+        PrintS("{\"nodelabel\": \""); dPrint(t, r, r, 0); PrintS("\", \"edgelable\": \""); dPrint(spoly, r, r, 0); PrintS("\"}, ");
+//         PrintS("\\CONSIDERTERM{"); dPrint(spoly, r, r, 0); PrintS("}\n");
+//         PrintS("\\CHILDNODE{"); dPrint(t, r, r, 0); PrintS("}\n");
       }
 
       kBucket_Plus_mm_Mult_pp(bucket, p, T->m[c], 0); // pLength(T->m[c])?
@@ -1129,8 +1157,9 @@ poly SchreyerSyzygyComputation::SchreyerSyzygyNF(const poly syz_lead, poly syz_2
      
   if( __TREEOUTPUT__ )
   {   
-    PrintS("\\ROOTRESULT{"); dPrint(result, r, r, 0); PrintS("}");	
-    PrintS("\\end{ROOTTREE}\n");
+//    PrintS("\\ROOTRESULT{"); dPrint(result, r, r, 0); PrintS("}");	
+//    PrintS("\\end{ROOTTREE}\n");
+    PrintS("]}, ");
   }
    
 
@@ -1159,9 +1188,8 @@ poly SchreyerSyzygyComputation::TraverseTail(poly multiplier, const int tail) co
    
   if( __TREEOUTPUT__ )
   {
-     PrintS("\\begin{ROOTTREE}{"); dPrint(multiplier, r, r, 0);Print("*gen(%d)}", tail);
-//    PrintS("\\ROOTRESULT{"); dPrint(t, R, R, 0); PrintS("}");	
-//     PrintS("\\end{ROOTTREE}\n");
+//    PrintS("\\begin{ROOTTREE}{"); dPrint(multiplier, r, r, 0);Print("*gen(%d)}", tail);
+    PrintS("{\"nodelabel\": \""); dPrint(multiplier, r, r, 0); Print("*gen(%d)", tail); PrintS("\", \"children\": ["); 
   }
    
   if ( top_itr != m_cache.end() )
@@ -1185,8 +1213,10 @@ poly SchreyerSyzygyComputation::TraverseTail(poly multiplier, const int tail) co
 
        if( __TREEOUTPUT__ )
        {
-         PrintS("\\REUSEROOTRESULT{"); dPrint(p, r, r, 0); PrintS("}\n");
-         PrintS("\\end{ROOTTREE}\n");
+         PrintS("{\"nodelabel\": \""); dPrint(p, r, r, 0); PrintS("\"}, "); 
+//         PrintS("\\REUSEROOTRESULT{"); dPrint(p, r, r, 0); PrintS("}\n");
+//         PrintS("\\end{ROOTTREE}\n");
+         PrintS("]}, ");
        }
 	
        return p;
@@ -1198,8 +1228,11 @@ poly SchreyerSyzygyComputation::TraverseTail(poly multiplier, const int tail) co
      
      if( __TREEOUTPUT__ )
      {
-       PrintS("\\STOREROOTRESULT{"); dPrint(p, r, r, 0); PrintS("}");	
-       PrintS("\\end{ROOTTREE}\n");
+//       PrintS("{\"nodelabel\": \""); dPrint(p, r, r, 0); PrintS("\"}, "); 
+
+//       PrintS("\\STOREROOTRESULT{"); dPrint(p, r, r, 0); PrintS("}");	
+//       PrintS("\\end{ROOTTREE}\n");
+       PrintS("]}, ");
      }
      return p_Copy(p, r);
   }
@@ -1213,8 +1246,10 @@ poly SchreyerSyzygyComputation::TraverseTail(poly multiplier, const int tail) co
 
   if( __TREEOUTPUT__ )
   {
-    PrintS("\\STOREROOTRESULT{"); dPrint(p, r, r, 0); PrintS("}");	
-    PrintS("\\end{ROOTTREE}\n");
+//    PrintS("\\STOREROOTRESULT{"); dPrint(p, r, r, 0); PrintS("}");	
+//    PrintS("\\end{ROOTTREE}\n");
+//    PrintS("{\"nodelabel\": \""); dPrint(p, r, r, 0); PrintS("\"}, "); 
+    PrintS("]}, ");
   }
   return p_Copy(p, r);
 }
@@ -1304,6 +1339,12 @@ poly SchreyerSyzygyComputation::ReduceTerm(poly multiplier, poly term4reduction,
   {
 #if NOPRODUCT
     s = m_div.FindReducer(multiplier, term4reduction, syztermCheck, m_checker);
+    
+    if( __TREEOUTPUT__ )
+    {
+      PrintS("{\"nodelabel\": \""); dPrint(s, r, r, 0);PrintS("\", ");
+    }
+    
 #else    
     // NOTE: only LT(term4reduction) should be used in the following:
     poly product = pp_Mult_mm(multiplier, term4reduction, r);
@@ -1311,7 +1352,8 @@ poly SchreyerSyzygyComputation::ReduceTerm(poly multiplier, poly term4reduction,
      
     if( __TREEOUTPUT__ && (s != NULL) )
     {
-      PrintS("\\CONSIDERTERM{"); dPrint(product, r, r, 0); PrintS("}\n");
+//      PrintS("\\CONSIDERTERM{"); dPrint(product, r, r, 0); PrintS("}\n");
+      PrintS("{\"nodelabel\": \""); dPrint(s, r, r, 0); PrintS("\", \"edgelable\": \""); dPrint(product, r, r, 0); PrintS("\", ");      
     }
      
     p_Delete(&product, r);
@@ -1323,7 +1365,7 @@ poly SchreyerSyzygyComputation::ReduceTerm(poly multiplier, poly term4reduction,
 
   if( __TREEOUTPUT__ )
   {
-    PrintS("\\CHILDNODE{"); dPrint(s, r, r, 0); PrintS("}\n");
+//    PrintS("\\CHILDNODE{"); dPrint(s, r, r, 0); PrintS("}\n");
   }
 
   poly b = leadmonom(s, r);
@@ -1333,15 +1375,17 @@ poly SchreyerSyzygyComputation::ReduceTerm(poly multiplier, poly term4reduction,
 
   if( __TREEOUTPUT__ )
   {
-     PrintS("\\begin{ROOTTREE}{"); dPrint(s, r, r, 0); PrintS("}");
+    PrintS("\"children\": [");
+    //     PrintS("\\begin{ROOTTREE}{"); dPrint(s, r, r, 0); PrintS("}");
   }
    
   const poly t = TraverseTail(b, c); // T->m[c];
 
   if( __TREEOUTPUT__ )
   {
-    PrintS("\\ROOTRESULT{"); dPrint(t, r, r, 0); PrintS("}");	
-    PrintS("\\end{ROOTTREE}\n");
+//    PrintS("\\ROOTRESULT{"); dPrint(t, r, r, 0); PrintS("}");	
+//    PrintS("\\end{ROOTTREE}\n");
+    PrintS("]}, ");
   }
    
   if( t != NULL )
