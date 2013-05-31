@@ -503,7 +503,7 @@ static BOOLEAN Tail(leftv res, leftv h)
 }
 
 
-static int cmp_c_ds(const void *p1, const void *p2, void *R)
+static int cmp_c_ds(void *R, const void *p1, const void *p2)
 {
   const int YES = 1;
   const int NO = -1;
@@ -524,7 +524,7 @@ static int cmp_c_ds(const void *p1, const void *p2, void *R)
 
   // TODO: test this!!!!!!!!!!!!!!!!
 
-  //return -( compare (c, ds) )
+  //return -( compare (c, qsorts) )
 
   const int __DEBUG__ = 0;
 
@@ -734,7 +734,7 @@ static BOOLEAN ComputeLeadingSyzygyTerms(leftv res, leftv h)
     const int sizeNew = IDELEMS(newid);
 
     if( sizeNew >= 2 )
-      qsort_r(newid->m, sizeNew, sizeof(poly), cmp_c_ds, r);
+      qsort_r(newid->m, sizeNew, sizeof(poly), r, cmp_c_ds);
 
     if (IDELEMS(newid) == 0 || (IDELEMS(newid) == 1 && newid->m[0] == NULL) )
       newid->rank = 1;    
@@ -809,7 +809,7 @@ static BOOLEAN Sort_c_ds(leftv res, leftv h)
     const ideal newid = id; // id_Copy(id, r); // copy???
 
     if( size >= 2 )
-      qsort_r(newid->m, size, sizeof(poly), cmp_c_ds, r);
+      qsort_r(newid->m, size, sizeof(poly), r, cmp_c_ds);
     
 //    res->data = newid;
 //    res->rtyp = h->Typ();
@@ -1016,7 +1016,7 @@ static BOOLEAN Compute2LeadingSyzygyTerms(leftv res, leftv h)
     const int sizeNew = IDELEMS(newid);
 
     if( sizeNew >= 2 )
-      qsort_r(newid->m, sizeNew, sizeof(poly), cmp_c_ds, r);
+      qsort_r(newid->m, sizeNew, sizeof(poly), r, cmp_c_ds);
 
     if (IDELEMS(newid) == 0 || (IDELEMS(newid) == 1 && newid->m[0] == NULL) )
       newid->rank = 1;
