@@ -203,6 +203,130 @@ static int cmp_poly(const poly &a, const poly &b)
 END_NAMESPACE
 /* namespace SORT_c_ds */
 
+/// writes a monomial (p),
+/// uses form x*gen(.) if ko != coloumn number of p
+static void writeLatexTerm(const poly t, const ring r, const bool bCurrSyz = true, const bool bLTonly = true)
+{
+  if( t == NULL )
+  {
+    PrintS(" 0 ");
+    return;
+  }
+   
+  assume( r != NULL );
+  const coeffs C = r->cf; assume(C != NULL);
+
+  poly p = t;
+  BOOLEAN writePlus = FALSE;
+
+  do {
+  assume( p != NULL );    
+	
+  // write coef...
+  number& n = p_GetCoeff(p, r);
+
+  n_Normalize(n, C);
+     
+  BOOLEAN writeMult = FALSE; ///< needs * before pp or module generator
+
+  BOOLEAN writeOne = FALSE; ///< need to write something after '-'!
+     
+  if( n_IsZero(n, C) )
+  {
+    PrintS( writePlus? " + 0" : " 0 " ); writePlus = TRUE; writeMult = TRUE;
+//    return; // yes?
+  }
+  
+  if (n_IsMOne(n, C))
+  {     
+    PrintS(" - "); writeOne = TRUE; writePlus = FALSE;
+  }     
+  else if (!n_IsOne(n, C))
+  {
+    if( writePlus && n_GreaterZero(n, C) )
+      PrintS(" + ");
+    
+    StringSetS(""); n_WriteLong(n, C); 
+    if (true) 
+    {
+      char *s = StringEndS(); PrintS(s); omFree(s);
+    }
+     
+     
+    writeMult = TRUE;
+    writePlus = TRUE;
+  } else
+     writeOne = TRUE;
+   
+  // missing '1' if no PP and gen...!?
+  // write monom...
+  const short N = rVar(r);
+
+  BOOLEAN wrotePP = FALSE; ///< needs * before module generator?
+
+  for (short i = 0; i < N; i++)
+  {
+    const long ee = p_GetExp(p, i+1, r);
+    
+    if (ee!=0L)
+    {
+      if (writeMult)
+      {
+        PrintS(" \\\\cdot ");
+        writeMult = FALSE;
+      } else
+      if( writePlus )
+        PrintS(" + ");
+
+      writePlus = FALSE;
+
+      if (ee != 1L)
+        Print(" %s^{%ld} ", rRingVar(i, r), ee);
+      else
+        Print(" %s ", rRingVar(i, r));
+       
+      writeOne = FALSE;
+      wrotePP = TRUE;
+    }
+  }
+
+  writePlus = writePlus || wrotePP;
+  writeMult = writeMult || wrotePP; 
+
+  // write module gen...
+  const long comp = p_GetComp(p, r);
+  
+  if (comp > 0 )
+  {
+    if (writeMult)
+      PrintS(" \\\\cdot ");
+     else 
+      if( writePlus )
+        PrintS(" + ");
+
+    if (bCurrSyz)
+      Print(" \\\\GEN{%ld} ", comp);
+    else
+      Print(" \\\\GENP{%ld} ", comp);
+     
+      writeOne = FALSE;  
+  }
+     
+  if ( writeOne )
+    PrintS( writePlus? " + 1 " : " 1 " );
+       
+
+  pIter(p);
+     
+  writePlus = TRUE;
+  } while( (!bLTonly) && (p != NULL) );
+   
+}
+
+
+
+
+   
 /// return a new term: leading coeff * leading monomial of p
 /// with 0 leading component!
 poly leadmonom(const poly p, const ring r, const bool bSetZeroComp)
@@ -777,50 +901,51 @@ poly SchreyerSyzygyComputation::TraverseNF(const poly a, const poly a2) const
 
   assume( r >= 0 && r < IDELEMS(T) );
   assume( r >= 0 && r < IDELEMS(L) );
-
-  poly aa = leadmonom(a, R); assume( aa != NULL); // :(
+   
+  assume( a != NULL );   
 
   if( __TREEOUTPUT__ )
   {
-//     PrintS("%%%% BEGIN LIFTPART DIAGRAMM\n");
-     PrintS("{   \"nodelabel\": \""); dPrint(a, R, R, 0);PrintS("\", \"children\": [");
-//    PrintS("\\ROOTRESULT{"); dPrint(t, R, R, 0); PrintS("}");	
-//     PrintS("\\end{ROOTTREE}\n");
+     PrintS("{ \"nodelabel\": \""); writeLatexTerm(a, R); PrintS("\", \"children\": [");
   }
    
-  poly t = TraverseTail(aa, r); 
 
+  poly aa = leadmonom(a, R); assume( aa != NULL); // :(
+
+  poly t = TraverseTail(aa, r); 
+   
   if( a2 != NULL )
   {
     assume( __LEAD2SYZ__ );
+
+    if( __TREEOUTPUT__ )
+    {
+       PrintS("{ \"nodelabel\": \""); writeLatexTerm(a2, R); PrintS("\", \"children\": [");
+    }
 
     // replace the following... ?
     const int r2 = p_GetComp(a2, R) - 1; poly aa2 = leadmonom(a2, R); // :(
 
     assume( r2 >= 0 && r2 < IDELEMS(T) );
 
-    if( __TREEOUTPUT__ )
-    {
-//       PrintS("\\CONSIDERTERM{"); dPrint(spoly, r, r, 0); PrintS("}\n");
-//       PrintS("{ \"nodelabel\": \""); dPrint(a2, R, R, 0); PrintS("\"");
-    }
-     
     t = p_Add_q(a2, p_Add_q(t, TraverseTail(aa2, r2), R), R); 
 
     p_Delete(&aa2, R);
+     
+    if( __TREEOUTPUT__ )
+       PrintS("]},");
+
   } else
     t = p_Add_q(t, ReduceTerm(aa, L->m[r], a), R);
 
   p_Delete(&aa, R);
-   
+
+  // TODO: print t???
+
   if( __TREEOUTPUT__ )
-  {   
-//    PrintS("\\ROOTRESULT{"); dPrint(t, R, R, 0); PrintS("}");	
-    PrintS("]}, ");
-  }
-   
-     
-   
+  {
+     PrintS("], \"noderesult\": \""); writeLatexTerm(t, R, true, false); PrintS("\" },");
+  }   
   return t;
 }
 
@@ -850,8 +975,7 @@ void SchreyerSyzygyComputation::ComputeSyzygy()
 
   if( __TREEOUTPUT__ )
   {
-//    PrintS("{ \"resolutionData\": { \"ring\": \"???\", \"input\": \"<?,?,?>\" }, \"syzygiesLayers\": [");
-    Print("{ \"layer\": \"%d\", \"diagrams\": [", __SYZNUMBER__);
+    Print("\n{ \"syzygylayer\": \"%d\", \"hybridnf\": \"%d\", \"diagrams\": \n[", __SYZNUMBER__, __HYBRIDNF__ ); 
   }  
    
   if( m_syzLeads == NULL )
@@ -883,10 +1007,15 @@ void SchreyerSyzygyComputation::ComputeSyzygy()
   TT = idInit(size, 0);
 
   if( size == 1 && LL->m[0] == NULL )
-    return;
+  {
+     if( __TREEOUTPUT__ )
+       PrintS("]},"); 
+     return;
+  }
+   
 
   // use hybrid method?
-  const bool method = (__HYBRIDNF__ == 1) || (__HYBRIDNF__ == 2 && __SYZNUMBER__ < 3);
+  const bool method = (__HYBRIDNF__  == 1) || (__HYBRIDNF__ == 2 && __SYZNUMBER__ < 3);
 
   if(  !__IGNORETAILS__)
   {
@@ -952,13 +1081,6 @@ void SchreyerSyzygyComputation::ComputeSyzygy()
       TT->m[k] = TraverseNF(a, a2);
   }
 
-  if( __TREEOUTPUT__ )
-  {
-//    PrintS("{ \"resolutionData\": { \"ring\": \"???\", \"input\": \"<?,?,?>\" }, \"syzygiesLayers\": [");
-    PrintS("] }\n");
-  }  
-
-  
 #ifndef NDEBUG
   if( !__TREEOUTPUT__ )
   if( TEST_OPT_PROT | 1)
@@ -968,7 +1090,10 @@ void SchreyerSyzygyComputation::ComputeSyzygy()
   }
 #endif   
 
-  TT->rank = id_RankFreeModule(TT, R);  
+  TT->rank = id_RankFreeModule(TT, R);
+   
+  if( __TREEOUTPUT__ )
+    PrintS("\n]},");
 }
 
 void SchreyerSyzygyComputation::ComputeLeadingSyzygyTerms(bool bComputeSecondTerms)
@@ -1032,7 +1157,7 @@ poly SchreyerSyzygyComputation::SchreyerSyzygyNF(const poly syz_lead, poly syz_2
   if( __TREEOUTPUT__ )
   {
 //     PrintS("%%%% BEGIN LIFTHYBRID DIAGRAMM\n");
-    PrintS("{   \"nodelabel\": \""); dPrint(syz_lead, r, r, 0);PrintS("\", \"children\": [");
+    PrintS("{   \"nodelabel\": \""); writeLatexTerm(syz_lead, r); PrintS("\", \"children\": [");
   }
    
   if( syz_2 == NULL )
@@ -1047,7 +1172,7 @@ poly SchreyerSyzygyComputation::SchreyerSyzygyNF(const poly syz_lead, poly syz_2
 
     if( __TREEOUTPUT__ )
     {
-      PrintS("{\"nodelabel\": \""); dPrint(syz_2, r, r, 0);PrintS("\"}, ");
+      PrintS("{ \"nodelabel\": \""); writeLatexTerm(syz_2, r); PrintS("\" },");
     }
 #else    
     poly aa = leadmonom(syz_lead, r); assume( aa != NULL); // :(
@@ -1055,8 +1180,7 @@ poly SchreyerSyzygyComputation::SchreyerSyzygyNF(const poly syz_lead, poly syz_2
 
     if( __TREEOUTPUT__ )
     {
-//      PrintS("\\CONSIDERTERM{"); dPrint(aa, r, r, 0); PrintS("}\n");
-      PrintS("{\"nodelabel\": \""); dPrint(syz_2, r, r, 0); PrintS("\", \"edgelable\": \""); dPrint(aa, r, r, 0); PrintS("\"}, ");
+      PrintS("{ \"nodelabel\": \""); writeLatexTerm(syz_2, r); PrintS("\", \"edgelable\": \""); writeLatexTerm(aa, r, false); PrintS("\" },");
     }
      
     syz_2 = m_div.FindReducer(aa, syz_lead, m_checker);
@@ -1067,13 +1191,6 @@ poly SchreyerSyzygyComputation::SchreyerSyzygyNF(const poly syz_lead, poly syz_2
   }
    
   assume( syz_2 != NULL ); // by construction of S-Polynomial    
-
-  if( __TREEOUTPUT__ )
-  {
-//    PrintS("\\CHILDNODE{"); dPrint(syz_2, r, r, 0); PrintS("}\n");
-  }
-  
-  assume( syz_2 != NULL );
 
   assume( L != NULL );
   assume( T != NULL );
@@ -1132,9 +1249,7 @@ poly SchreyerSyzygyComputation::SchreyerSyzygyNF(const poly syz_lead, poly syz_2
        
       if( __TREEOUTPUT__ )
       {
-        PrintS("{\"nodelabel\": \""); dPrint(t, r, r, 0); PrintS("\", \"edgelable\": \""); dPrint(spoly, r, r, 0); PrintS("\"}, ");
-//         PrintS("\\CONSIDERTERM{"); dPrint(spoly, r, r, 0); PrintS("}\n");
-//         PrintS("\\CHILDNODE{"); dPrint(t, r, r, 0); PrintS("}\n");
+        PrintS("{ \"nodelabel\": \""); writeLatexTerm(t, r); PrintS("\", \"edgelable\": \""); writeLatexTerm(spoly, r, false); PrintS("\" },");
       }
 
       kBucket_Plus_mm_Mult_pp(bucket, p, T->m[c], 0); // pLength(T->m[c])?
@@ -1157,9 +1272,7 @@ poly SchreyerSyzygyComputation::SchreyerSyzygyNF(const poly syz_lead, poly syz_2
      
   if( __TREEOUTPUT__ )
   {   
-//    PrintS("\\ROOTRESULT{"); dPrint(result, r, r, 0); PrintS("}");	
-//    PrintS("\\end{ROOTTREE}\n");
-    PrintS("]}, ");
+    PrintS("]},");
   }
    
 
@@ -1186,12 +1299,6 @@ poly SchreyerSyzygyComputation::TraverseTail(poly multiplier, const int tail) co
   // TODO: store (multiplier, tail) -.-^-.-^-.--> !
   TCache::iterator top_itr = m_cache.find(tail);
    
-  if( __TREEOUTPUT__ )
-  {
-//    PrintS("\\begin{ROOTTREE}{"); dPrint(multiplier, r, r, 0);Print("*gen(%d)}", tail);
-    PrintS("{\"nodelabel\": \""); dPrint(multiplier, r, r, 0); Print("*gen(%d)", tail); PrintS("\", \"children\": ["); 
-  }
-   
   if ( top_itr != m_cache.end() )
   {
      assume( top_itr->first == tail );
@@ -1202,55 +1309,79 @@ poly SchreyerSyzygyComputation::TraverseTail(poly multiplier, const int tail) co
      
      if( itr != T.end() ) // Yey - Reuse!!!
      {
-       assume( p_LmEqual(itr->first, multiplier, r) ); 
+       assume( p_LmEqual(itr->first, multiplier, r) );
+	
+       if( itr->second == NULL )
+	 return (NULL);
+	
        poly p = p_Copy(itr->second, r); // no copy???
-       if( !n_Equal( pGetCoeff(multiplier), pGetCoeff(itr->first), r) ) // normalize coeffs!?
-       {
-	 number n = n_Div( pGetCoeff(multiplier), pGetCoeff(itr->first), r); 
-         p = p_Mult_nn(p, n, r); 
-	 n_Delete(&n, r);
-       }
-
+	
        if( __TREEOUTPUT__ )
        {
-         PrintS("{\"nodelabel\": \""); dPrint(p, r, r, 0); PrintS("\"}, "); 
-//         PrintS("\\REUSEROOTRESULT{"); dPrint(p, r, r, 0); PrintS("}\n");
-//         PrintS("\\end{ROOTTREE}\n");
-         PrintS("]}, ");
+//         PrintS("{ \"nodelabel\": \""); writeLatexTerm(multiplier, r, false); 
+//         Print(" \\\\cdot \\\\GEN{%d}\", \"children\": [ ", tail + 1);
+	  Print("{ \"lookedupnode\": \"1\", \"nodelabel\": \"");
+	  writeLatexTerm(p, r, true, false);
+       }
+	
+       if( !n_Equal( pGetCoeff(multiplier), pGetCoeff(itr->first), r) ) // normalize coeffs!?
+       {
+         number n = n_Div( pGetCoeff(multiplier), pGetCoeff(itr->first), r); 
+         p = p_Mult_nn(p, n, r); 
+         n_Delete(&n, r);
+	  
+         if( __TREEOUTPUT__ )
+           Print("\", \"RESCALEDRESULT\": \"1\" },");
+       } else
+       {
+         if( __TREEOUTPUT__ )
+           Print("\", \"RESCALEDRESULT\": \"0\" },");
        }
 	
        return p;
      }
+
+     if( __TREEOUTPUT__ )
+     {
+//        PrintS("{ \"nodelabel\": \""); writeLatexTerm(multiplier, r, false); Print(" \\\\cdot \\\\GEN{%d}\", \"children\": [", tail + 1);
+     }     
      
      const poly p = ComputeImage(multiplier, tail);
-     T.insert( TP2PCache::value_type(p_Copy(multiplier, r), p) );
-//     T[ multiplier ] = p;
+     T.insert( TP2PCache::value_type(p_Copy(multiplier, r), p) ); //     T[ multiplier ] = p;
+
+//     if( p == NULL )
+//        return (NULL);
      
      if( __TREEOUTPUT__ )
      {
-//       PrintS("{\"nodelabel\": \""); dPrint(p, r, r, 0); PrintS("\"}, "); 
-
-//       PrintS("\\STOREROOTRESULT{"); dPrint(p, r, r, 0); PrintS("}");	
-//       PrintS("\\end{ROOTTREE}\n");
-       PrintS("]}, ");
+//	PrintS("], \"storedResult\": \""); writeLatexTerm(p, r, true, false); PrintS("\" },");
      }
+     
      return p_Copy(p, r);
   }
+   
   CCacheCompare o(r); TP2PCache T(o);
 
+  if( __TREEOUTPUT__ )
+  {
+//     PrintS("{ \"nodelabel\": \""); writeLatexTerm(multiplier, r, false); Print(" \\\\cdot \\\\GEN{%d}\", \"children\": [", tail + 1);
+  }
+   
+   
   const poly p = ComputeImage(multiplier, tail);
 
   T.insert( TP2PCache::value_type(p_Copy(multiplier, r), p) );
    
   m_cache.insert( TCache::value_type(tail, T) );
 
+//  if( p == NULL )
+//    return (NULL);
+   
   if( __TREEOUTPUT__ )
   {
-//    PrintS("\\STOREROOTRESULT{"); dPrint(p, r, r, 0); PrintS("}");	
-//    PrintS("\\end{ROOTTREE}\n");
-//    PrintS("{\"nodelabel\": \""); dPrint(p, r, r, 0); PrintS("\"}, "); 
-    PrintS("]}, ");
+//     PrintS("], \"storedResult\": \""); writeLatexTerm(p, r, true, false); PrintS("\" },");
   }
+   
   return p_Copy(p, r);
 }
 
@@ -1339,21 +1470,26 @@ poly SchreyerSyzygyComputation::ReduceTerm(poly multiplier, poly term4reduction,
   {
 #if NOPRODUCT
     s = m_div.FindReducer(multiplier, term4reduction, syztermCheck, m_checker);
-    
+
+    if( s == NULL ) // No Reducer?
+     return s;
+     
     if( __TREEOUTPUT__ )
     {
-      PrintS("{\"nodelabel\": \""); dPrint(s, r, r, 0);PrintS("\", ");
+      PrintS("{ \"nodelabel\": \""); writeLatexTerm(s, r); 
     }
     
 #else    
     // NOTE: only LT(term4reduction) should be used in the following:
     poly product = pp_Mult_mm(multiplier, term4reduction, r);
     s = m_div.FindReducer(product, syztermCheck, m_checker);
+
+    if( s == NULL ) // No Reducer?
+     return s;
      
-    if( __TREEOUTPUT__ && (s != NULL) )
+    if( __TREEOUTPUT__ )
     {
-//      PrintS("\\CONSIDERTERM{"); dPrint(product, r, r, 0); PrintS("}\n");
-      PrintS("{\"nodelabel\": \""); dPrint(s, r, r, 0); PrintS("\", \"edgelable\": \""); dPrint(product, r, r, 0); PrintS("\", ");      
+      PrintS("{ \"nodelabel\": \""); writeLatexTerm(s, r); PrintS("\", \"edgelable\": \""); writeLatexTerm(product, r, false); 
     }
      
     p_Delete(&product, r);
@@ -1362,35 +1498,30 @@ poly SchreyerSyzygyComputation::ReduceTerm(poly multiplier, poly term4reduction,
 
   if( s == NULL ) // No Reducer?
     return s;
-
-  if( __TREEOUTPUT__ )
-  {
-//    PrintS("\\CHILDNODE{"); dPrint(s, r, r, 0); PrintS("}\n");
-  }
+   
 
   poly b = leadmonom(s, r);
 
   const int c = p_GetComp(s, r) - 1;
   assume( c >= 0 && c < IDELEMS(T) );
 
+   
   if( __TREEOUTPUT__ )
-  {
-    PrintS("\"children\": [");
-    //     PrintS("\\begin{ROOTTREE}{"); dPrint(s, r, r, 0); PrintS("}");
-  }
+     PrintS("\", \"children\": [");
    
   const poly t = TraverseTail(b, c); // T->m[c];
 
-  if( __TREEOUTPUT__ )
-  {
-//    PrintS("\\ROOTRESULT{"); dPrint(t, r, r, 0); PrintS("}");	
-//    PrintS("\\end{ROOTTREE}\n");
-    PrintS("]}, ");
-  }
-   
   if( t != NULL )
     s = p_Add_q(s, t, r); 
 
+  if( __TREEOUTPUT__ )
+  {
+	
+    PrintS("], \"noderesult\": \"");
+    writeLatexTerm(s, r, true, false); 
+    PrintS("\" },");
+  }
+   
   return s;
 }
 
@@ -1407,6 +1538,7 @@ static inline int atGetInt(idhdl rootRingHdl, const char* attribute, long def)
 
 END_NAMESPACE   
 
+     
 SchreyerSyzygyComputationFlags::SchreyerSyzygyComputationFlags(idhdl rootRingHdl):
 #ifndef NDEBUG
      __DEBUG__( atGetInt(rootRingHdl,"DEBUG", 0) ),
@@ -1547,8 +1679,7 @@ bool CLeadingTerm::DivisibilityCheck(const poly product, const unsigned long not
 
   assume( p_GetComp(p, r) == p_GetComp(product, r) );
 
-  const int k = m_label;
-
+//  const int k = m_label;
 //  assume( m_L->m[k] == p );
 
   const unsigned long p_sev = m_sev;
