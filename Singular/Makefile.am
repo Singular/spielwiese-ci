@@ -50,16 +50,19 @@ module_LTLIBRARIES = pyobject.la
 
 pyobject_la_SOURCES = pyobject.cc
 
-# pyobject_la_CPPFLAGS   = ${AM_CPPFLAGS} ${NODEBUGDEFS}
-# pyobject_g_la_CPPFLAGS = ${AM_CPPFLAGS}
+#PYTHON_EXTRA_LDFLAGS='-u _PyMac_Error /System/Library/Frameworks/Python.framework/Versions/2.7/Python'
+#PYTHON_EXTRA_LIBS=' -ldl  -framework CoreFoundation'
+#PYTHON_LDFLAGS='-L/usr/lib/python2.7/config -lpython2.7'
 
+pyobject_la_CPPFLAGS = ${AM_CPPFLAGS} ${PYTHON_CPPFLAGS}
 pyobject_la_CXXFLAGS = @PYTHON_CSPEC@
 pyobject_la_CFLAGS   = @PYTHON_CSPEC@ 
 
 # ${NODEBUGCXXFLAGS} 
-# pyobject_g_la_CXXFLAGS = ${DEBUGCXXFLAGS} @PYTHON_CSPEC@
+# pyobject_g_la_CXXFLAGS = ${DEBUGCXXFLAGS} ${PYTHON_CSPEC}
 
-pyobject_la_LDFLAGS = ${AMLDFLAGS} @PYTHON_LSPEC@ -module -export-dynamic -avoid-version -flat_namespace -weak_reference_mismatches weak -undefined dynamic_lookup
+pyobject_la_LIBADD = ${PYTHON_EXTRA_LIBS}
+pyobject_la_LDFLAGS = ${AMLDFLAGS} ${PYTHON_LSPEC} ${PYTHON_LDFLAGS} ${PYTHON_EXTRA_LDFLAGS} -module -export-dynamic -avoid-version -flat_namespace -weak_reference_mismatches weak -undefined dynamic_lookup
 ###  -export-dynamic -shared -module -avoid-version (add to all DMs?)
 
 
