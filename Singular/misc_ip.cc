@@ -11,10 +11,11 @@
 /*****************************************************************************/
 
 // include header files
-#include <misc/auxiliary.h>
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif /* HAVE_CONFIG_H */
+
+#include <misc/auxiliary.h>
 #include <kernel/mod2.h>
 #include <Singular/si_signals.h>
 
@@ -875,11 +876,11 @@ char * versionString()
               StringAppendS("ratGB,");
 #endif
               StringAppend("random=%d\n",siRandomStart);
-              StringAppend("\tCC=%s %s,\n\tCXX=%s %s"
+              StringAppend("\tCC=%s,FLAGS:%s,\n\tCXX=%s,FLAGS:%s,\n\tLDFLAGS:%s,LIBS:%s "
 #ifdef __GNUC__
-              "(" __VERSION__ ")"
+              "(ver: " __VERSION__ ")"
 #endif
-              "\n",CC,CFLAGS,CXX,CXXFLAGS);
+              "\n",CC,CFLAGS,CXX,CXXFLAGS, LDFLAGS, LIBS);
               feStringAppendResources(0);
               feStringAppendBrowsers(0);
               StringAppendS("\n");
