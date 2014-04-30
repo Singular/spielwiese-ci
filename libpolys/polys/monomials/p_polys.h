@@ -656,17 +656,14 @@ static inline int p_Comp_k_n(poly a, poly b, int k, ring r)
  * Allocation/Initalization/Deletion
  *
  ***************************************************************/
-#if PDEBUG > 2
 static inline poly p_New(const ring r, omBin bin)
-#else
-static inline poly p_New(const ring /*r*/, omBin bin)
-#endif
 {
   p_CheckRing2(r);
   pAssume2(bin != NULL && omSizeWOfBin(r->PolyBin) == omSizeWOfBin(bin));
   poly p;
   omTypeAllocBin(poly, p, bin);
   p_SetRingOfLm(p, r);
+  (void)r; // removes unused variable warning!
   return p;
 }
 
