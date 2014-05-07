@@ -7,23 +7,31 @@ AM_CPPFLAGS = -I${top_srcdir} -I${top_builddir} -I${top_srcdir}/kernel -I${top_b
 ########################### Dynamic Modules... #########################
 SUBDIRS = dyn_modules
 
-if HAVE_GFANLIB
-  USE_GFANLIB = ${builddir}/dyn_modules/callgfanlib/gfanlib.la ${abs_top_builddir}/gfanlib/libgfan.la ${CDDGMPLDFLAGS}
-else
-  USE_GFANLIB = 
+BUILTIN_FLAGS=${BUILTIN_LIBS}
+
+#USE_GFANLIB = 
+if SI_BUILTIN_GFANLIB
+ if HAVE_GFANLIB
+#  USE_GFANLIB
+  BUILTIN_FLAGS += ${builddir}/dyn_modules/callgfanlib/gfanlib.la
+ endif
 endif
 
-if PYTHON_USE
-  PY=${builddir}/dyn_modules/pyobject/pyobject.la
-else !PYTHON_USE
-  PY=
-endif !PYTHON_USE
+#EMBED_PYOBJECT =
+if SI_BUILTIN_PYOBJECT
+ if SI_EMBED_PYTHON
+  if PYTHON_USE
+#   EMBED_PYOBJECT
+    BUILTIN_FLAGS += ${builddir}/dyn_modules/pyobject/pyobject.la
+  endif
+ endif
+endif
 
-if SI_EMBED_PYTHON
- EMBED_PYOBJECT   = ${PY} ${builddir}/dyn_modules/syzextra/syzextra.la ${USE_GFANLIB}
-else !SI_EMBED_PYTHON
-  EMBED_PYOBJECT = 
-endif !SI_EMBED_PYTHON
+#EMBED_SYZEXTRA =
+if SI_BUILTIN_SYZEXTRA
+# EMBED_SYZEXTRA
+ BUILTIN_FLAGS += ${builddir}/dyn_modules/syzextra/syzextra.la
+endif
 
 ########################### libSingular* #########################
 
@@ -140,7 +148,7 @@ SingularHEADERS = \
 nodist_libSingular_la_SOURCES = feOpt.inc iparith.inc 
 
 libSingular_la_LDFLAGS    =${USEPPROCSDYNAMICLDFLAGS} ${USEPPROCSDYNAMICLD} -release ${PACKAGE_VERSION} ${PTHREAD_LDFLAGS}
-libSingular_la_LIBADD     =${USEPPROCSDYNAMICLDFLAGS} ${USEPPROCSDYNAMICLD} ${EMBED_PYOBJECT} ${top_builddir}/kernel/libkernel.la ${PTHREAD_LIBS}
+libSingular_la_LIBADD     =${USEPPROCSDYNAMICLDFLAGS} ${USEPPROCSDYNAMICLD} ${BUILTIN_FLAGS} ${top_builddir}/kernel/libkernel.la ${PTHREAD_LIBS}
 
 libSingular_includedir = ${includedir}/singular/Singular
 nobase_libSingular_include_HEADERS = $(SingularHEADERS)
@@ -176,16 +184,15 @@ Singular ESingular TSingular $(optional_Singular_programs): ${abs_builddir}/LIB
 
 Singular_SOURCES = tesths.cc mmalloc.cc fegetopt.c fegetopt.h utils.cc  utils.h
 
-Singular_LDADD = libSingular.la ${EMBED_PYOBJECT}
+Singular_LDADD = libSingular.la ${BUILTIN_FLAGS}
 
-Singular_LDFLAGS = -static ${EMBED_PYOBJECT}
+Singular_LDFLAGS = -static ${BUILTIN_FLAGS}
 
 Singulars_SOURCES = tesths.cc mmalloc.cc fegetopt.c fegetopt.h utils.cc  utils.h
 
-#  ${EMBED_PYOBJECT_LDFLAGS}  ${EMBED_PYOBJECT_LDFLAGS}
-Singulars_LDADD = libSingular.la ${EMBED_PYOBJECT}
+Singulars_LDADD = libSingular.la ${BUILTIN_FLAGS}
 
-Singulars_LDFLAGS = -static ${AM_LDFLAGS} ${EMBED_PYOBJECT}
+Singulars_LDFLAGS = -static ${AM_LDFLAGS} ${BUILTIN_FLAGS}
 
 scriptdir = $(libexecdir)/singular/MOD
 dist_script_SCRIPTS = singularsurf
@@ -246,7 +253,6 @@ TESTS=test
 check_PROGRAMS=$(TESTS)
 
 test_SOURCES = test.cc
-# ${EMBED_PYOBJECT_LDFLAGS}
 test_LDADD = libSingular.la 
 
 #########################################################

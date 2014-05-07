@@ -288,3 +288,26 @@ AC_ARG_ENABLE(factory, AS_HELP_STRING([--disable-factory], [Disable factory]),
   AC_MSG_RESULT($ENABLE_FACTORY)
 
 ])
+
+
+
+AC_DEFUN([SING_BUILTIN_MODULES],
+[
+ AC_MSG_CHECKING([whether for builtin modules])
+
+ AC_ARG_VAR( [BUILTIN_LIBS], [LIBS for building-in] )
+ AC_ARG_WITH(builtinmodules, AS_HELP_STRING([--with-builtinmodules], [list? of builtin modules (experimental)]))
+
+ if test "x$builtinmodules" == xno; then
+  AC_MSG_RESULT(no)
+ else
+  AC_DEFINE_UNQUOTED([SI_BUILTINMODULES],"$builtinmodules",[List? of Builtin modules])
+  AC_MSG_RESULT(yes)
+ fi
+ AC_SUBST(BUILTIN_LIBS)
+
+ AM_CONDITIONAL([SI_BUILTIN_PYOBJECT],[test "x$builtinmodules" == xyes])
+ AM_CONDITIONAL([SI_BUILTIN_SYZEXTRA],[test "x$builtinmodules" == xyes])
+ AM_CONDITIONAL([SI_BUILTIN_GFANLIB],[test "x$builtinmodules" == xyes])
+
+])
