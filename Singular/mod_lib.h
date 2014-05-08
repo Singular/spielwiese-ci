@@ -8,13 +8,12 @@
 
 lib_types type_of_LIB(const char *newlib, char *fullname);
 
-
+/*
 #if HAVE_GFANLIB
 #define SI_BUILTIN_GFANLIB(add) add(gfanlib)
 #else
 #define SI_BUILTIN_GFANLIB(add)
 #endif
-
 
 #ifdef EMBED_PYTHON
 #define SI_BUILTIN_PYOBJECT(add) add(pyobject)  add(syzextra)      SI_BUILTIN_GFANLIB(add)
@@ -22,6 +21,7 @@ lib_types type_of_LIB(const char *newlib, char *fullname);
 #else
 #define SI_BUILTIN_PYOBJECT(add)
 #endif
+*/
 
 #ifdef HAVE_MATHICGB
 # define SI_BUILTIN_MATHIC(add) add(singmathic)
@@ -34,7 +34,8 @@ lib_types type_of_LIB(const char *newlib, char *fullname);
 #define SI_FOREACH_BUILTIN(add)\
     add(staticdemo)\
     SI_BUILTIN_MATHIC(add)\
-    SI_BUILTIN_PYOBJECT(add)
+    SI_BUILTINMODULES_ADD(add)
+//    SI_BUILTIN_PYOBJECT(add)
 
 #define SI_MOD_INIT(name) name##_mod_init
 
