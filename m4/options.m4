@@ -300,10 +300,11 @@ AC_DEFUN([SING_BUILTIN_MODULES],
  AC_ARG_WITH(builtinmodules, 
    AS_HELP_STRING([--with-builtinmodules], [List of builtin modules (experimental), default: staticdemo,bigintm,syzextra]),
    [if test "x$with_builtinmodules" == xyes; then
-    with_builtinmodules=staticdemo,bigintm,syzextra
+    with_builtinmodules=syzextra
    fi], 
    [with_builtinmodules=""]
  )
+ # staticdemo,bigintm,
  # ,pyobject,gfanlib,polymake,singmathic
 
  AH_TEMPLATE([SI_BUILTINMODULES_ADD],[Add(list) for Builtin modules])
