@@ -482,7 +482,7 @@ Trager (const CanonicalForm & F, const CFList & Astar,
     Variable X;
     for (iter= sqrfFactors; iter.hasItem(); iter++)
     {
-      if (hasFirstAlgVar (iter.getItem().factor(), X))
+      if (hasFirstAlgVar (R, X))
       {
         // factorize over alg.extension with X
         tmp= factorize (iter.getItem().factor(), X);
