@@ -80,6 +80,25 @@ AC_SUBST(CC)
 
 AC_CHECK_LIB(rt,clock_gettime)
 
+AC_FUNC_ERROR_AT_LINE
+AC_FUNC_MALLOC
+
+# check for cpu properties
+AC_CHECK_SIZEOF(long,4)
+SING_CHECK_CPU
+
+#check for host:
+AC_CANONICAL_HOST
+# AC_CANONICAL_BUILD
+# AC_CANONICAL_TARGET
+
+case $host_os in
+  *cygwin* ) AX_APPEND_LINK_FLAGS([-Wl,-Bdynamic]);;
+esac
+
+PKG_REQUIRE="$PKG_REQUIRE"
+AC_SUBST(PKG_REQUIRE)
+
 LB_CHECK_GMP(4.0,,AC_MSG_ERROR([Unable to find GMP on your machine: please use --with-gmp=PATH_TO_DIR_CONTAINING_LIB_AND_INCLUDE (see also ./configure --help if you do not understand what we are talking about)]))
 LB_CHECK_NTL(5.0,,AC_MSG_WARN([Unable to find NTL (which is strongly recommended) on your machine: please use --with-ntl=PATH_TO_DIR_CONTAINING_LIB_AND_INCLUDE (see also ./configure --help if you do not understand what we are talking about)]))
 LB_CHECK_FLINT(2.3,,AC_MSG_WARN([Unable to find FLINT (which is strongly recommended) on your machine: please use --with-flint=PATH_TO_DIR_CONTAINING_LIB_AND_INCLUDE (see also ./configure --help if you do not understand what we are talking about)]))
@@ -90,23 +109,6 @@ AC_CONFIG_GOOGLE_PERFTOOLS()
 AX_PYTHON_WITH_VERSION([2.4])
 
 LB_CHECK_MATHICGB
-
-AC_FUNC_ERROR_AT_LINE
-AC_FUNC_MALLOC
-
-# check for cpu properties
-AC_CHECK_SIZEOF(long,4)
-SING_CHECK_CPU
-
-#check for host:
-AC_CANONICAL_HOST
-
-case $host_os in
-  *cygwin* ) AX_APPEND_LINK_FLAGS([-Wl,-Bdynamic]);;
-esac
-
-PKG_REQUIRE="$PKG_REQUIRE"
-AC_SUBST(PKG_REQUIRE)
 
 SING_USE_OMALLOC()
 SING_USE_RESOURCES()
