@@ -34,24 +34,39 @@ AC_MSG_CHECKING(for GMP >= $min_gmp_version)
 
 AC_LANG_PUSH([C])
 
+_os=`uname`
+
+
+
 for GMP_HOME in ${GMP_HOME_PATH} 
   do	
 #	if test -r "$GMP_HOME/include/gmp.h"; then
 
 		if test "x$GMP_HOME" != "x/usr"; then
 			GMP_CFLAGS="-I${GMP_HOME}/include"
-			GMP_LIBS="-L${GMP_HOME}/lib -Wl,-rpath -Wl,${GMP_HOME}/lib -lgmp"
+			GMP_LIBS="-L${GMP_HOME}/lib"
+
+                        #case $host_os in#      *darwin*)
+			case "$_os" in
+			 "Linux")
+			   GMP_LIBS+=" -R${GMP_HOME}/lib "
+			 ;;
+			 "Darwin")
+			   GMP_LIBS+=" -R${GMP_HOME}/lib "
+			 ;;
+			esac
+		
+			
 		else
 			GMP_CFLAGS=""
-			GMP_LIBS="-lgmp"
+			GMP_LIBS=""
 		fi
-	
+		
+		GMP_LIBS+="-lgmp"
+
 		CFLAGS="${BACKUP_CFLAGS} ${GMP_CFLAGS}"
 		LIBS="${BACKUP_LIBS} ${GMP_LIBS}"
 
-    # According to C. Fieker this would link but would not RUN
-    # (AC_TRY_RUN) due to missing SHARED libgmp.so :(
-    # TODO: set LD_LIBRARY_PATH???
 		AC_TRY_LINK(
 		[#include <gmp.h>],
 		[mpz_t a; mpz_init (a);],
