@@ -17,6 +17,7 @@ extern "C" {
 
 #include <omalloc/omConfig.h>
 
+/*
 #if defined(OM_NDEBUG) && !defined(OM_ALLOC_INTERNAL)
 #if (SIZEOF_LONG == 8)
 #define OM_T_FREE1
@@ -26,6 +27,7 @@ extern "C" {
 #define OM_T_REALLOC
 #endif
 #endif
+*/
 
 #include "omDerivedConfig.h"
 #include "omError.h"
