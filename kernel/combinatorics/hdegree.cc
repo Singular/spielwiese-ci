@@ -837,13 +837,13 @@ void scDegree(ideal S, intvec *modulweight, ideal Q)
   delete hseries2;
 }
 
-static void hDegree0(ideal S, ideal Q, const ring r=currRing)
+static void hDegree0(ideal S, ideal Q, const ring tailRing)
 {
-  id_Test(S, r);  
-  id_Test(Q, r);
+  id_TestTail(S, currRing, tailRing);  
+  id_TestTail(Q, currRing, tailRing);
    
   int  mc;
-  hexist = hInit(S, Q, &hNexist, r);
+  hexist = hInit(S, Q, &hNexist, tailRing);
   if (!hNexist)
   {
     hMu = -1;
@@ -851,6 +851,9 @@ static void hDegree0(ideal S, ideal Q, const ring r=currRing)
   }
   else
     hMu = 0;
+   
+  const ring r = currRing;
+   
   hwork = (scfmon)omAlloc(hNexist * sizeof(scmon));
   hvar = (varset)omAlloc(((r->N) + 1) * sizeof(int));
   hpur0 = (scmon)omAlloc((1 + ((r->N) * (r->N))) * sizeof(int));
@@ -908,11 +911,11 @@ static void hDegree0(ideal S, ideal Q, const ring r=currRing)
     omFreeSize((ADDRESS)hstc, hNexist * sizeof(scmon));
 }
 
-int  scMult0Int(ideal S, ideal Q, const ring r)
+int  scMult0Int(ideal S, ideal Q, const ring tailRing)
 {
-  id_Test(S, r);  
-  id_Test(Q, r);  
-  hDegree0(S, Q);
+  id_TestTail(S, currRing, tailRing);  
+  id_TestTail(Q, currRing, tailRing);
+  hDegree0(S, Q, tailRing);
   return hMu;
 }
 
@@ -1015,7 +1018,7 @@ void scComputeHC(ideal S, ideal Q, int ak, poly &hEdge, ring tailRing)
   #endif
 
   hNvar = (currRing->N);
-  hexist = hInit(S, Q, &hNexist, tailRing);
+  hexist = hInit(S, Q, &hNexist, tailRing); // tailRing?
   if (k!=0)
     hComp(hexist, hNexist, k, hexist, &hNstc);
   else
