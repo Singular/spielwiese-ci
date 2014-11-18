@@ -24,8 +24,9 @@
 #include <polys/nc/nc.h>
 #include <polys/nc/sca.h>
 #include <polys/prCopy.h>
+
 #include <coeffs/longrat.h>
-#include <coeffs/modulop.h>
+// #include <coeffs/modulop.h>
 
 #include <stdlib.h>
 #include <stdio.h>
