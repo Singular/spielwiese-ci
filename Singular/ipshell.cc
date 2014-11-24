@@ -1801,7 +1801,7 @@ void rDecomposeRing(leftv h,const ring R)
   lists LL=(lists)omAlloc0Bin(slists_bin);
   LL->Init(2);
   LL->m[0].rtyp=BIGINT_CMD;
-  LL->m[0].data=nlMapGMP((number) R->cf->modBase, R->cf, R->cf);
+  LL->m[0].data=n_InitMPZ(R->cf->modBase, coeffs_BIGINT); // // nlMapGMP((number) R->cf->modBase, R->cf, R->cf); // ??
   LL->m[1].rtyp=INT_CMD;
   LL->m[1].data=(void *) R->cf->modExponent;
   L->m[1].rtyp=LIST_CMD;
@@ -5283,8 +5283,8 @@ ring rInit(sleftv* pn, sleftv* rv, sleftv* ord)
       else if (pn->next->Typ()==BIGINT_CMD)
       {
         number p=(number)pn->next->CopyD();
-        nlGMP(p,(number)modBase,coeffs_BIGINT);
-        nlDelete(&p,coeffs_BIGINT);
+	n_MPZ( modBase, p, coeffs_BIGINT); // nlGMP(p,(number)modBase,coeffs_BIGINT); // ??
+        n_Delete(&p,coeffs_BIGINT);
       }
     }
     else
