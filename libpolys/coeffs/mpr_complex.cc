@@ -12,15 +12,24 @@
 
 
 #include <misc/auxiliary.h>
+#include <omalloc/omalloc.h>
+
+#include <reporter/reporter.h>
 
 //#ifdef HAVE_MPR
 #include <coeffs/coeffs.h>
-#include <reporter/reporter.h>
-#include <omalloc/omalloc.h>
 #include <coeffs/numbers.h>
-#include <coeffs/longrat.h>
-#include <math.h>
+
 #include <coeffs/mpr_complex.h>
+
+#include "longrat.h" 
+
+#ifdef HAVE_NUMSTATS
+    extern void     nlNormalize(number &x, const coeffs r);
+#endif
+
+#include <math.h>
+
 
 //%s
 // this was copied form longrat0.cc

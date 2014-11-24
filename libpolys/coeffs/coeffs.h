@@ -10,6 +10,8 @@
 #define COEFFS_H
 
 #include <misc/auxiliary.h>
+#include <omalloc/omalloc.h>
+
 #include <misc/sirandom.h>
 /* for assume: */
 #include <reporter/reporter.h>
@@ -81,6 +83,12 @@ typedef IEnumerator<number> ICoeffsEnumerator;
 /// goes over coeffs given by the ICoeffsEnumerator and changes them.
 /// Additionally returns a number;
 typedef void (*nCoeffsEnumeratorFunc)(ICoeffsEnumerator& numberCollectionEnumerator, number& output, const coeffs r);
+
+extern omBin rnumber_bin;
+
+#define FREE_RNUMBER(x) omFreeBin((void *)x, rnumber_bin)
+#define ALLOC_RNUMBER() (number)omAllocBin(rnumber_bin)
+#define ALLOC0_RNUMBER() (number)omAlloc0Bin(rnumber_bin)
 
 
 /// Creation data needed for finite fields

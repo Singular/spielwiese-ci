@@ -22,7 +22,9 @@ libcoeffs_la_SOURCES   = $(SOURCES)
 
 libcoeffs_la_includedir  =$(includedir)/singular/coeffs
 libcoeffs_la_include_HEADERS = \
-  coeffs.h numbers.h si_gmp.h gnumpc.h gnumpfl.h longrat.h modulop.h ffields.h rintegers.h rmodulo2m.h rmodulon.h \
+  coeffs.h numbers.h si_gmp.h \
+  gnumpc.h gnumpfl.h longrat.h modulop.h modulop.inc \
+  ffields.h rintegers.h rmodulo2m.h rmodulon.h \
   shortfl.h mpr_complex.h mpr_global.h numstats.h \
   bigintmat.h Enumerator.h AE.h OPAE.h AEp.h OPAEp.h AEQ.h OPAEQ.h
 

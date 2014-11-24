@@ -483,7 +483,7 @@ char* bigintmat::StringAsPrinted()
     }
     else  // Mit Leerzeichen auffüllen und zahl reinschreiben
     {
-      for (int j=0; j<colwid[cj]-_nl; j++)
+      for (int j=0; j<(colwid[cj]-_nl); j++)
         ps[pos+j] = ' ';
       for (int j=0; j<_nl; j++)
         ps[pos+colwid[cj]-_nl+j] = ts[j];
@@ -1924,8 +1924,8 @@ static number bimFarey(bigintmat *A, number N, bigintmat *L) {
         return NULL;
       }
 
-      number d = nlGetDenom(q, Q),
-             n = nlGetNumerator(q, Q);
+      number d = n_GetDenom(q, Q),
+             n = n_GetNumerator(q, Q);
 
       n_Delete(&q, Q);
       n_Delete(&ad, Z);
