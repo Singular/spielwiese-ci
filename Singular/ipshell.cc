@@ -56,15 +56,15 @@
 #include <coeffs/longrat.h>
 #include <coeffs/rmodulon.h>
 
+#include <polys/ext_fields/algext.h>
+#include <polys/ext_fields/transext.h>
+
 #include <kernel/numeric/mpr_base.h>
 #include <kernel/numeric/mpr_numeric.h>
 #include <kernel/numeric/mpr_inout.h>
 
 #include <math.h>
 #include <ctype.h>
-
-#include <polys/ext_fields/algext.h>
-#include <polys/ext_fields/transext.h>
 
 // define this if you want to use the fast_map routine for mapping ideals
 #define FAST_MAP
