@@ -37,11 +37,10 @@
 
 #include "mpr_base.h"
 #include "mpr_numeric.h"
+#include "mpr_inout.h"
 
 #include <math.h>
 //<-
-
-extern void nPrint(number n);  // for debugging output
 
 //-----------------------------------------------------------------------------
 //-------------- vandermonde system solver ------------------------------------

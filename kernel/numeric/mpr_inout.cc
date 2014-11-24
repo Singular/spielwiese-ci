@@ -41,6 +41,7 @@
 #ifdef MPR_TIMING
 #define TIMING
 #endif
+
 #include <factory/timing.h>
 TIMING_DEFINE_PRINT(mpr_overall)
 TIMING_DEFINE_PRINT(mpr_check)
