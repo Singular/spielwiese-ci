@@ -21,14 +21,21 @@
 #include <coeffs/coeffs.h>
 #include <coeffs/numbers.h>
 
+#include "gnumpc.h"
+
 #include <coeffs/longrat.h>
-#include <coeffs/modulop.h>
-
-#include <coeffs/gnumpc.h>
-#include <coeffs/gnumpfl.h>
-#include <coeffs/shortfl.h>
-
 #include <coeffs/mpr_complex.h>
+
+
+#ifndef HAVE_NUMSTATS
+   #include "modulop.h" // for npInt
+   #include "shortfl.h" // for nrFloat
+   #include "gnumpfl.h" // for ngfRead
+#else
+    extern const char *   ngfRead (const char *s, number *a, const coeffs r);
+    extern float   nrFloat(number n);
+    extern int     npInt         (number &n, const coeffs r);
+#endif
 
 
 /// Get a mapping function from src into the domain of this type: long_C!
