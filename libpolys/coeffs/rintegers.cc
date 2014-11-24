@@ -329,7 +329,7 @@ number nrzMapQ(number from, const coeffs src, const coeffs /*dst*/)
 {
   int_number erg = (int_number) omAllocBin(gmp_nrz_bin);
   mpz_init(erg);
-  nlGMP(from, (number) erg, src);
+  n_MPZ(erg, from, src); // nlGMP(from, (number) erg, src);
   return (number) erg;
 }
 

@@ -63,7 +63,7 @@ BOOLEAN jjCRING_Zm(leftv res, leftv a, leftv b)
   {
     ZnmInfo info;
     number modBase= (number) omAlloc(sizeof(mpz_t));
-    nlGMP(i2,modBase,coeffs_BIGINT);
+    n_MPZ(modBase,i2,coeffs_BIGINT);    // nlGMP(i2,modBase,coeffs_BIGINT);
     info.base= (mpz_ptr)modBase;
     info.exp= 1;
     res->data=(void *)nInitChar(n_Zn,&info);
