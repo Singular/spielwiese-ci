@@ -65,6 +65,9 @@ BOOLEAN loNewtonP( leftv res, leftv arg1 );
  */
 BOOLEAN loSimplex( leftv res, leftv args );
 
+/// only for debug, over any initalized currRing 
+void nPrint(number n);
+
 #endif
 
 // local Variables: ***
