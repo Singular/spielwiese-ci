@@ -39,7 +39,13 @@
 
 #include <coeffs/coeffs.h>
 #include <coeffs/numbers.h>
+
 #include <coeffs/longrat.h>
+
+#ifdef HAVE_NUMSTATS
+   // Map q \in QQ \to Zp
+  extern number nlModP(number q, const coeffs Q, const coeffs Zp);
+#endif
 
 #include <polys/monomials/ring.h>
 #include <polys/monomials/p_polys.h>

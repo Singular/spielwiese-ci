@@ -9,11 +9,7 @@
 #include <stdio.h>
 #include <string.h>
 
-
-
-
 #include <misc/auxiliary.h>
-
 #include <omalloc/omalloc.h>
 #include <reporter/reporter.h>
 
@@ -21,6 +17,10 @@
 #include "numbers.h"
 
 #include "longrat.h"
+
+#ifdef HAVE_NUMSTATS
+ extern void     nlNormalize(number &x, const coeffs r);
+#endif
 
 /// Our Type!
 static const n_coeffType ID = n_Q;

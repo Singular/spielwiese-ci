@@ -61,7 +61,7 @@ static FORCE_INLINE void n_InpAdd_RingGeneral(number &n1, number n2, const ring 
 {  assume(rField_is_Ring(r)); n_InpAdd(n1, n2, r->cf); }
 #endif
 
-#include <coeffs/modulop.h>
+#include <coeffs/modulop.inc>
 
 #define n_Copy_FieldZp(n, r)        n
 #define n_Delete_FieldZp(n, r)      do {} while (0)

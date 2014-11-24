@@ -45,12 +45,19 @@
 #include <misc/auxiliary.h>
 
 #include <omalloc/omalloc.h>
+#include <factory/factory.h>
 
 #include <reporter/reporter.h>
 
 #include <coeffs/coeffs.h>
 #include <coeffs/numbers.h>
+
 #include <coeffs/longrat.h>
+
+#ifdef HAVE_NUMSTATS
+   // Map q \in QQ \to Zp
+  extern number nlModP(number q, const coeffs Q, const coeffs Zp);
+#endif
 
 #include <polys/monomials/ring.h>
 #include <polys/monomials/p_polys.h>
@@ -58,10 +65,10 @@
 
 #include <polys/clapsing.h>
 #include <polys/clapconv.h>
-#include <factory/factory.h>
 
-#include <polys/ext_fields/transext.h>
 #include <polys/prCopy.h>
+#include "transext.h"
+#include "algext.h"
 
 #include <polys/PolyEnumerator.h>
 
@@ -1148,7 +1155,7 @@ void handleNestedFractionsOverQ(fraction f, const coeffs cf)
       while ((p != NULL) && (!n_IsOne(gcdOfCoefficients, ntCoeffs)))
       {
         c = p_GetCoeff(p, ntRing);
-        tmp = nlGcd(c, gcdOfCoefficients, ntCoeffs);
+        tmp = n_Gcd(c, gcdOfCoefficients, ntCoeffs);
         n_Delete(&gcdOfCoefficients, ntCoeffs);
         gcdOfCoefficients = tmp;
         pIter(p);
@@ -1157,7 +1164,7 @@ void handleNestedFractionsOverQ(fraction f, const coeffs cf)
       while ((p != NULL) && (!n_IsOne(gcdOfCoefficients, ntCoeffs)))
       {
         c = p_GetCoeff(p, ntRing);
-        tmp = nlGcd(c, gcdOfCoefficients, ntCoeffs);
+        tmp = n_Gcd(c, gcdOfCoefficients, ntCoeffs);
         n_Delete(&gcdOfCoefficients, ntCoeffs);
         gcdOfCoefficients = tmp;
         pIter(p);
@@ -1513,7 +1520,7 @@ number ntNormalizeHelper(number a, number b, const coeffs cf)
     if (p_IsConstant(pa,ntRing) && p_IsConstant(pb,ntRing))
     {
       pGcd = pa;
-      p_SetCoeff (pGcd, nlGcd (pGetCoeff(pGcd), pGetCoeff(pb), ntCoeffs), ntRing);
+      p_SetCoeff (pGcd, n_Gcd (pGetCoeff(pGcd), pGetCoeff(pb), ntCoeffs), ntRing);
     }
     else
     {
@@ -1768,8 +1775,8 @@ number ntMap00(number a, const coeffs src, const coeffs dst)
     n_Test(res,dst);
     return res;
   }
-  number nn=nlGetDenom(a,src);
-  number zz=nlGetNumerator(a,src);
+  number nn=n_GetDenom(a,src);
+  number zz=n_GetNumerator(a,src);
   number res=ntInit(p_NSet(zz,dst->extRing), dst);
   fraction ff=(fraction)res;
   if (n_IsOne(nn,src)) DEN(ff)=NULL;
@@ -2401,8 +2408,8 @@ BOOLEAN ntInitChar(coeffs cf, void * infoStruct)
   cf->rep=n_rep_rat_fct;
 
   cf->factoryVarOffset = R->cf->factoryVarOffset + rVar(R);
-  extern char* naCoeffString(const coeffs r);
-  cf->cfCoeffString = naCoeffString;
+
+  cf->cfCoeffString = naCoeffString; 
 
   cf->cfGreaterZero  = ntGreaterZero;
   cf->cfGreater      = ntGreater;
