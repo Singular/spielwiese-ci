@@ -1,10 +1,7 @@
 #ifndef QPOLY
 #define QPOLY
 
-
-#include <gmp.h>
-#include <omalloc/omalloc.h>
-
+#include "si_gmp.h"
 
 class Q_poly // Klasse von Q_polynomen mit Typ (Grad, Koeffizienten ganzzahlig)
 {
