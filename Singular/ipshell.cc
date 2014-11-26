@@ -46,7 +46,6 @@
 #include <kernel/spectrum/splist.h>
 #include <kernel/spectrum/spectrum.h>
 ////// #include <coeffs/gnumpfl.h>
-//#include <kernel/mpr_base.h>
 ////// #include <coeffs/ffields.h>
 #include <polys/clapsing.h>
 #include <kernel/combinatorics/hutil.h>
@@ -4208,9 +4207,6 @@ BOOLEAN    semicProc   ( leftv res,leftv u,leftv v )
 }
 
 #endif
-
-//from mpr_inout.cc
-extern void nPrint(number n);
 
 BOOLEAN loNewtonP( leftv res, leftv arg1 )
 {
