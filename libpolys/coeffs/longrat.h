@@ -99,17 +99,17 @@ static inline int nlQlogSize (number n, const coeffs r)
 }
 
 
-#ifndef HAVE_NUMSTATS
-/// Map q \in QQ \to Zp
+# ifndef HAVE_NUMSTATS
 extern number nlModP(number q, const coeffs Q, const coeffs Zp);
-extern void     nlNormalize(number &x, const coeffs r);
-extern void nlInpGcd(number &a, number b, const coeffs r);
+extern void   nlNormalize(number &x, const coeffs r);
+extern void   nlInpGcd(number &a, number b, const coeffs r);
+extern void   nlDelete(number *a, const coeffs r);
 
-#ifdef HAVE_RINGS
-extern void     nlGMP(number &i, number n, const coeffs r); // to be replaced with n_MPZ(number n, number &i,const coeffs r)
-#endif
-
-#endif
+#  ifdef HAVE_RINGS
+extern void   nlGMP(number &i, number n, const coeffs r); // to be replaced with n_MPZ(number n, number &i,const coeffs r)???
+extern number nlMapGMP(number from, const coeffs src, const coeffs dst);
+#  endif
+# endif
 
 #endif
 

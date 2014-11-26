@@ -29,7 +29,7 @@
 
 // allow inlining only from p_Numbers.h and if ! LDEBUG
 #if defined(DO_LINLINE) && defined(P_NUMBERS_H) && !defined(LDEBUG)
-#define LINLINE static inline
+#define LINLINE static FORCE_INLINE
 #else
 #define LINLINE
 #undef DO_LINLINE
