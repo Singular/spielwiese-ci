@@ -52,17 +52,22 @@ using std::vector;
 #endif
 #include <stdlib.h>
 
+#include <misc/options.h>
+
+// #include <coeffs/modulop.h>
+#include <coeffs/modulop.inc>
+
 #include <polys/monomials/p_polys.h>
+#include <polys/monomials/ring.h>
+#include <polys/kbuckets.h>
 
 #include <kernel/ideals.h>
-#include <polys/monomials/ring.h>
-#include <misc/options.h>
 #include <kernel/polys.h>
+
 #include <kernel/GBEngine/kutil.h>
 #include <kernel/GBEngine/kInline.h>
 #include <kernel/GBEngine/kstd1.h>
-#include <polys/kbuckets.h>
-#include <coeffs/modulop.h>
+
 
 class PolySimple
 {
