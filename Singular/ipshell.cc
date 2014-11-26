@@ -2085,7 +2085,7 @@ void rComposeRing(lists L, ring R)
     lists LL=(lists)L->m[1].data;
     if ((LL->nr >= 0) && LL->m[0].rtyp == BIGINT_CMD)
     {
-      number tmp= (number) LL->m[0].data;
+      number tmp= (number) LL->m[0].CopyD();
       n_MPZ (modBase, tmp, coeffs_BIGINT);
     }
     else if (LL->nr >= 0 && LL->m[0].rtyp == INT_CMD)
