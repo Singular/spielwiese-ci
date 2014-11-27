@@ -6,14 +6,19 @@
 /*
 * ABSTRACT: computations with GMP floating-point numbers
 */
-#include <coeffs/coeffs.h>
+// #include <coeffs/coeffs.h>
+
+#include <misc/auxiliary.h>
+
+struct n_Procs_s; typedef struct  n_Procs_s  *coeffs;
+struct snumber; typedef struct snumber *   number;
 
 /// Initialize r
 BOOLEAN ngfInitChar(coeffs r, void *);
 
 #ifndef HAVE_NUMSTATS
 // will be reused by gnumpc.cc
-/* extern */ const char *   ngfRead (const char *s, number *a, const coeffs r);
+const char *   ngfRead (const char *s, number *a, const coeffs r);
 #endif
 
 

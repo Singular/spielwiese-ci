@@ -6,7 +6,11 @@
 /*
 * ABSTRACT: numbers modulo n
 */
-#include <coeffs/coeffs.h>
+#include <misc/auxiliary.h>
+
+struct n_Procs_s; typedef struct  n_Procs_s  *coeffs;
+struct snumber; typedef struct snumber *   number;
+
 #include <coeffs/rintegers.h>
 
 #ifdef HAVE_RINGS

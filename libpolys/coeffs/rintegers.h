@@ -6,8 +6,10 @@
 /*
 * ABSTRACT: numbers modulo n
 */
-#ifdef HAVE_RINGS
+#include <misc/auxiliary.h>
 #include <coeffs/coeffs.h>
+
+#ifdef HAVE_RINGS
 
 #if SI_INTEGER_VARIANT == 3
 #define SR_HDL(A) ((long)(A))
@@ -25,7 +27,7 @@ BOOLEAN nrzInitChar    (coeffs r,  void * parameter);
 
 #ifndef HAVE_NUMSTATS
 // will be reused by rmodulon.cc
-/* extern */ void    nrzWrite       (number &a, const coeffs r);
+void    nrzWrite       (number &a, const coeffs r);
 #endif
 
 #endif

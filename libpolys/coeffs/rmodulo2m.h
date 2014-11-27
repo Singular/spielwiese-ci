@@ -7,9 +7,15 @@
 * ABSTRACT: numbers modulo 2^m such that 2^m - 1
 *           fits in an unsigned long
 */
-#ifdef HAVE_RINGS
-#include <coeffs/coeffs.h>
+
+#include <misc/auxiliary.h>
+
+struct n_Procs_s; typedef struct  n_Procs_s  *coeffs;
+struct snumber; typedef struct snumber *   number;
+
 #include <coeffs/rintegers.h>
+
+#ifdef HAVE_RINGS
 
 #ifndef NATNUMBER
 #define NATNUMBER unsigned long

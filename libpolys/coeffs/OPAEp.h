@@ -4,7 +4,10 @@
 *  Computer Algebra System SINGULAR     *
 ****************************************/
 
-#include <coeffs/coeffs.h>
+#include <misc/auxiliary.h>
+
+struct n_Procs_s; typedef struct  n_Procs_s  *coeffs;
+struct snumber; typedef struct snumber *   number;
 
 BOOLEAN n_pAEInitChar(coeffs , void *);
 
