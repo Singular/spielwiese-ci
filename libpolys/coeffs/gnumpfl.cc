@@ -8,23 +8,17 @@
 */
 
 #include <misc/auxiliary.h>
-
-#include <coeffs/coeffs.h>
 #include <omalloc/omalloc.h>
+
 #include <reporter/reporter.h>
-#include <coeffs/numbers.h>
 
-#include <coeffs/longrat.h>
-// #include <coeffs/shortfl.h>
+#include "coeffs.h"
+#include "numbers.h"
+#include "mpr_complex.h"
 
+#include "longrat.h"
+#include "shortfl.h"
 #include "gnumpfl.h"
-#include <coeffs/mpr_complex.h>
-
-#ifndef HAVE_NUMSTATS
-  #include "modulop.h" // for npInt
-#else
-  extern int     npInt         (number &n, const coeffs r);
-#endif
 
 //ring ngfMapRing; // to be used also in gnumpc.cc
 
@@ -552,7 +546,7 @@ static number ngfMapP(number from, const coeffs src, const coeffs dst)
 {
   assume( getCoeffType(dst) == ID );
   assume( getCoeffType(src) ==  n_Zp );
-
+  extern int     npInt         (number &n, const coeffs r);
   return ngfInit(npInt(from,src), dst);
 }
 

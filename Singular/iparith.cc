@@ -18,9 +18,9 @@
 #include <coeffs/numbers.h>
 
 #ifdef HAVE_RINGS
-#include <coeffs/rmodulon.h>
-#include <coeffs/rmodulo2m.h>
-#include <coeffs/rintegers.h>
+// #include <coeffs/rmodulon.h>
+// #include <coeffs/rmodulo2m.h>
+// #include <coeffs/rintegers.h>
 #endif
 
 #include <misc/options.h>

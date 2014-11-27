@@ -7,7 +7,7 @@
 
 #include <misc/intvec.h>
 #include <misc/sirandom.h>
-#include <coeffs/longrat.h>
+// #include <coeffs/longrat.h>
 #include <coeffs/bigintmat.h>
 
 #include <Singular/ipid.h>

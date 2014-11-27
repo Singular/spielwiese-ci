@@ -23,12 +23,6 @@
 #include <coeffs/OPAE.h>
 #include <coeffs/AE.h>
 
-#ifndef HAVE_NUMSTATS
-    #include "modulop.h"  // for npSetMap
-#else
-    extern nMapFunc npSetMap(const coeffs src, const coeffs dst);
-#endif
-
 BOOLEAN nAECoeffIsEqual     (number a, number b, const coeffs r);
 number  nAEMult        (number a, number b, const coeffs r);
 number  nAESub         (number a, number b, const coeffs r);
@@ -387,6 +381,7 @@ BOOLEAN n_AEInitChar(coeffs r, void *)
     r->cfLcm  = nAELcm; // ZU BEARBEITEN
     r->cfDelete= nAEDelete;
 
+    extern nMapFunc npSetMap(const coeffs src, const coeffs dst); // FIXME: BUG?
     r->cfSetMap = npSetMap; // WHY??? // TODO: this seems to be a bug!
    
     r->cfInpMult=nAEInpMult; //????

@@ -96,17 +96,15 @@ static inline int nlQlogSize (number n, const coeffs r)
 }
 
 
-# ifndef HAVE_NUMSTATS
-number nlModP(number q, const coeffs Q, const coeffs Zp);
-void   nlNormalize(number &x, const coeffs r);
-void   nlInpGcd(number &a, number b, const coeffs r);
-void   nlDelete(number *a, const coeffs r);
+// number nlModP(number q, const coeffs Q, const coeffs Zp);
+// void   nlNormalize(number &x, const coeffs r);
+// void   nlInpGcd(number &a, number b, const coeffs r);
+// void   nlDelete(number *a, const coeffs r);
 
 #  ifdef HAVE_RINGS
-void   nlGMP(number &i, number n, const coeffs r); // to be replaced with n_MPZ(number n, number &i,const coeffs r)???
-number nlMapGMP(number from, const coeffs src, const coeffs dst);
+// void   nlGMP(number &i, number n, const coeffs r); // to be replaced with n_MPZ(number n, number &i,const coeffs r)???
+// number nlMapGMP(number from, const coeffs src, const coeffs dst);
 #  endif
-# endif
 
 #endif
 

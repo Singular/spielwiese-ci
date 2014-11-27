@@ -20,12 +20,6 @@
 #include <coeffs/mpr_complex.h>
 
 #include "longrat.h"
-
-#ifdef HAVE_NUMSTATS
-    /// Map q \in QQ \to Zp
-    extern number nlModP(number q, const coeffs Q, const coeffs Zp);
-#endif
-
 #include "modulop.h"
 #include "modulop.inc"
 
@@ -799,6 +793,7 @@ nMapFunc npSetMap(const coeffs src, const coeffs dst)
 #endif
   if (src->rep==n_rep_gap_rat)  /* Q, Z */
   {
+    extern number nlModP(number q, const coeffs Q, const coeffs Zp); // Map q \in QQ \to Zp // FIXME!
     return nlModP; // npMap0;
   }
   if ((src->rep==n_rep_int) &&  nCoeff_is_Zp(src) )

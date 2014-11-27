@@ -19,11 +19,7 @@
 
 // #include <coeffs/ffields.h>
 
-#include <coeffs/longrat.h> // ???
-
-#ifdef HAVE_NUMSTATS
-    extern void nlInpGcd(number &a, number b, const coeffs r);
-#endif
+#include <coeffs/longrat.h> // snumber is needed...
 
 #include <polys/PolyEnumerator.h>
 
@@ -2424,6 +2420,7 @@ void p_SimpleContent(poly ph, int smax, const ring r)
     n_Delete(&h,r->cf);
     h = d;
 #else
+    extern void nlInpGcd(number &a, number b, const coeffs r);
     STATISTIC(n_Gcd); nlInpGcd(h,pGetCoeff(p),r->cf);
 #endif
     if(n_Size(h,r->cf)<smax)

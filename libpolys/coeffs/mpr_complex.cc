@@ -23,10 +23,7 @@
 #include <coeffs/mpr_complex.h>
 
 #include "longrat.h" 
-
-#ifdef HAVE_NUMSTATS
-    extern void     nlNormalize(number &x, const coeffs r);
-#endif
+extern void     nlNormalize(number &x, const coeffs r); // FIXME
 
 #include <math.h>
 

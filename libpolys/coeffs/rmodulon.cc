@@ -10,22 +10,14 @@
 #include <misc/mylimits.h>
 #include <reporter/reporter.h>
 
-#include <coeffs/coeffs.h>
-#include <coeffs/numbers.h>
-#include <coeffs/longrat.h>
-#include <coeffs/mpr_complex.h>
-
-#include "rmodulon.h"
-
 #include "si_gmp.h"
+#include "coeffs.h"
+#include "numbers.h"
 
-# ifdef HAVE_NUMSTATS
-#  ifdef HAVE_RINGS
-extern void   nlGMP(number &i, number n, const coeffs r); // to be replaced with n_MPZ(number n, number &i,const coeffs r)???
-#  endif
-# else
-#  include <coeffs/longrat.h>
-# endif
+#include "mpr_complex.h"
+
+#include "longrat.h"
+#include "rmodulon.h"
 
 #include <string.h>
 
@@ -67,14 +59,7 @@ number  nrnXExtGcd      (number a, number b, number *s, number *t, number *u, nu
 number  nrnQuotRem      (number a, number b, number *s, const coeffs r);
 nMapFunc nrnSetMap     (const coeffs src, const coeffs dst);
 #if SI_INTEGER_VARIANT==2
-
-
-# ifndef HAVE_NUMSTATS
- # include "rintegers.h"
-# else
-extern void    nrzWrite       (number &a, const coeffs r);
-# endif
-
+extern void    nrzWrite       (number &a, const coeffs r); // FIXME
 # define  nrnWrite      nrzWrite
 #else
 void nrnWrite (number &a, const coeffs);
@@ -833,6 +818,7 @@ number nrnMapQ(number from, const coeffs src, const coeffs dst)
 {
   int_number erg = (int_number)omAllocBin(gmp_nrz_bin);
   mpz_init(erg);
+  extern void   nlGMP(number &i, number n, const coeffs r); // to be replaced with n_MPZ(number n, number &i,const coeffs r)???
   nlGMP(from, (number)erg, src); // FIXME: n_MPZ(erg, from, src); // ?
   mpz_mod(erg, erg, dst->modNumber);
   return (number)erg;

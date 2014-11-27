@@ -13,14 +13,6 @@
 
 #include <Singular/number2.h>
 
-# ifdef HAVE_NUMSTATS
-#  ifdef HAVE_RINGS
-extern void   nlGMP(number &i, number n, const coeffs r); // to be replaced with n_MPZ(number n, number &i,const coeffs r)???
-#  endif
-# else
-#  include <coeffs/longrat.h>
-# endif
-
 char *crString(coeffs c)
 {
   if (c==NULL)
@@ -70,6 +62,7 @@ BOOLEAN jjCRING_Zm(leftv res, leftv a, leftv b)
   {
     ZnmInfo info;
     number modBase= (number) omAlloc(sizeof(mpz_t));
+    extern void   nlGMP(number &i, number n, const coeffs r); // to be replaced with n_MPZ(number n, number &i,const coeffs r)???
     nlGMP(i2,modBase,coeffs_BIGINT); // FIXME: n_MPZ(modBase,i2,coeffs_BIGINT); // ?
     info.base= (mpz_ptr)modBase;
     info.exp= 1;

@@ -986,5 +986,10 @@ number n_convFactoryNSingN( const CanonicalForm n, const coeffs r);
 
 CanonicalForm n_convSingNFactoryN( number n, BOOLEAN setChar, const coeffs r );
 
+
+// TODO: remove the following functions:
+static FORCE_INLINE void number2mpz(number n, coeffs c, mpz_t m){ n_MPZ(m, n, c); }
+static FORCE_INLINE number mpz2number(mpz_t m, coeffs c){ return n_InitMPZ(m, c); }
+
 #endif
 

@@ -20,9 +20,10 @@
 #include <coeffs/coeffs.h>
 // #include <coeffs/mpr_complex.h>
 // #include <coeffs/longrat.h>
-#include <coeffs/rmodulon.h>
 // #include <coeffs/gnumpfl.h>
 // #include <coeffs/ffields.h>
+
+#include <coeffs/rmodulon.h>
 
 #include <polys/monomials/ring.h>
 #include <polys/monomials/maps.h>
@@ -66,16 +67,6 @@
 #include <Singular/ipid.h>
 #include <Singular/subexpr.h>
 #include <Singular/fevoices.h>
-
-# ifdef HAVE_NUMSTATS
-#  ifdef HAVE_RINGS
-extern void   nlGMP(number &i, number n, const coeffs r); // to be replaced with n_MPZ(number n, number &i,const coeffs r)???
-extern number nlMapGMP(number from, const coeffs src, const coeffs dst);
-#  endif
-# else
-#  include <coeffs/longrat.h>
-# endif
-
 
 #include <math.h>
 #include <ctype.h>
@@ -1815,7 +1806,8 @@ void rDecomposeRing(leftv h,const ring R)
   lists LL=(lists)omAlloc0Bin(slists_bin);
   LL->Init(2);
   LL->m[0].rtyp=BIGINT_CMD;
-  LL->m[0].data=nlMapGMP((number) R->cf->modBase, R->cf, R->cf); // FIXME: n_InitMPZ(R->cf->modBase, coeffs_BIGINT); ?
+  extern number nlMapGMP(number from, const coeffs src, const coeffs dst);
+  LL->m[0].data=nlMapGMP((number) R->cf->modBase, R->cf, R->cf); // FIXME: n_InitMPZ(R->cf->modBase, coeffs_BIGINT); ? // What is this???
   LL->m[1].rtyp=INT_CMD;
   LL->m[1].data=(void *) R->cf->modExponent;
   L->m[1].rtyp=LIST_CMD;
@@ -5298,6 +5290,7 @@ ring rInit(sleftv* pn, sleftv* rv, sleftv* ord)
       else if (pn->next->Typ()==BIGINT_CMD)
       {
         number p=(number)pn->next->CopyD();     // CopyD()?
+        extern void   nlGMP(number &i, number n, const coeffs r); // to be replaced with n_MPZ(number n, number &i,const coeffs r)???
         nlGMP(p,(number)modBase,coeffs_BIGINT); // FIXME: n_MPZ( modBase, p, coeffs_BIGINT); ?
         n_Delete(&p,coeffs_BIGINT);
       }

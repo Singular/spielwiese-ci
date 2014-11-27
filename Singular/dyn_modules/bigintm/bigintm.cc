@@ -6,7 +6,7 @@
 
 #include <omalloc/omalloc.h>
 #include <coeffs/coeffs.h>
-#include <coeffs/longrat.h>
+// #include <coeffs/longrat.h>
 
 #include <Singular/ipid.h>
 #include <Singular/subexpr.h>

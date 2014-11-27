@@ -25,10 +25,8 @@
 
 BOOLEAN nrzInitChar    (coeffs r,  void * parameter);
 
-#ifndef HAVE_NUMSTATS
 // will be reused by rmodulon.cc
-void    nrzWrite       (number &a, const coeffs r);
-#endif
+// void    nrzWrite       (number &a, const coeffs r);
 
 #endif
 
