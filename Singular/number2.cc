@@ -5,7 +5,6 @@
 #include <coeffs/numbers.h> // nRegister, coeffs.h
 #include <coeffs/rmodulon.h> // ZnmInfo
 #include <coeffs/bigintmat.h> // bigintmat
-// #include <coeffs/longrat.h> // nlGMP
 
 #include <Singular/blackbox.h> // blackbox type
 #include <Singular/ipshell.h> // IsPrime
@@ -13,6 +12,14 @@
 #include <Singular/ipid.h> // for SModulFunctions, leftv
 
 #include <Singular/number2.h>
+
+# ifdef HAVE_NUMSTATS
+#  ifdef HAVE_RINGS
+extern void   nlGMP(number &i, number n, const coeffs r); // to be replaced with n_MPZ(number n, number &i,const coeffs r)???
+#  endif
+# else
+#  include <coeffs/longrat.h>
+# endif
 
 char *crString(coeffs c)
 {
@@ -63,7 +70,7 @@ BOOLEAN jjCRING_Zm(leftv res, leftv a, leftv b)
   {
     ZnmInfo info;
     number modBase= (number) omAlloc(sizeof(mpz_t));
-    nlGMP(i2,modBase,coeffs_BIGINT);
+    nlGMP(i2,modBase,coeffs_BIGINT); // FIXME: n_MPZ(modBase,i2,coeffs_BIGINT); // ?
     info.base= (mpz_ptr)modBase;
     info.exp= 1;
     res->data=(void *)nInitChar(n_Zn,&info);

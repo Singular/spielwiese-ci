@@ -21,15 +21,8 @@
 #include "si_gmp.h"
 
 # ifdef HAVE_NUMSTATS
-
-//extern number nlModP(number q, const coeffs Q, const coeffs Zp);
-//extern void   nlNormalize(number &x, const coeffs r);
-//extern void   nlInpGcd(number &a, number b, const coeffs r);
-//extern void   nlDelete(number *a, const coeffs r);
-
 #  ifdef HAVE_RINGS
 extern void   nlGMP(number &i, number n, const coeffs r); // to be replaced with n_MPZ(number n, number &i,const coeffs r)???
-//extern number nlMapGMP(number from, const coeffs src, const coeffs dst);
 #  endif
 # else
 #  include <coeffs/longrat.h>
@@ -729,8 +722,7 @@ number nr2mMapQ(number from, const coeffs src, const coeffs dst)
   mpz_init(erg);
   int_number k = (int_number)omAlloc(sizeof(mpz_t));
   mpz_init_set_ui(k, dst->mod2mMask);
-
-  nlGMP(from, (number)erg, src);
+  nlGMP(from, (number)erg, src); // FIXME: n_MPZ(erg, from, src); // ?
   mpz_and(erg, erg, k);
   number res = (number)mpz_get_ui(erg);
 
