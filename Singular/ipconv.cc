@@ -22,9 +22,9 @@
 #include <coeffs/bigintmat.h>
 //#include <polys/ext_fields/longalg.h>
 #ifdef HAVE_RINGS
-#include <coeffs/rmodulon.h>
-#include <coeffs/rmodulo2m.h>
-#include <coeffs/rintegers.h>
+// #include <coeffs/rmodulon.h>
+// #include <coeffs/rmodulo2m.h>
+// #include <coeffs/rintegers.h>
 #endif
 #include <polys/matpol.h>
 #include <Singular/links/silink.h>

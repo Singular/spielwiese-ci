@@ -13,12 +13,12 @@
 
 #include <reporter/reporter.h>
 
-#include <coeffs/numbers.h>
-#include <coeffs/coeffs.h>
-#include <coeffs/shortfl.h>
+#include "numbers.h"
+#include "coeffs.h"
+#include "mpr_complex.h"
 
-#include <coeffs/longrat.h>
-#include <coeffs/mpr_complex.h>
+#include "shortfl.h"
+#include "longrat.h"
 
 #include <string.h>
 #include <math.h>

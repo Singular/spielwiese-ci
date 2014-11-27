@@ -16,10 +16,7 @@ struct snumber; typedef struct snumber *   number;
 /// Initialize r
 BOOLEAN ngfInitChar(coeffs r, void *);
 
-#ifndef HAVE_NUMSTATS
 // will be reused by gnumpc.cc
-const char *   ngfRead (const char *s, number *a, const coeffs r);
-#endif
-
+// const char *   ngfRead (const char *s, number *a, const coeffs r);
 
 #endif

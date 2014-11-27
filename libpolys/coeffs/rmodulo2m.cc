@@ -11,27 +11,18 @@
 #include <misc/mylimits.h>
 #include <reporter/reporter.h>
 
-#include <coeffs/coeffs.h>
-#include <coeffs/numbers.h>
-#include <coeffs/longrat.h>
-#include <coeffs/mpr_complex.h>
-#include <coeffs/rmodulo2m.h>
-#include <coeffs/rmodulon.h>
-
 #include "si_gmp.h"
+#include "coeffs.h"
+#include "numbers.h"
+#include "longrat.h"
+#include "mpr_complex.h"
 
-# ifdef HAVE_NUMSTATS
-#  ifdef HAVE_RINGS
-extern void   nlGMP(number &i, number n, const coeffs r); // to be replaced with n_MPZ(number n, number &i,const coeffs r)???
-#  endif
-# else
-#  include <coeffs/longrat.h>
-# endif
+#include "rmodulo2m.h"
+#include "rmodulon.h"
 
 #include <string.h>
 
 #ifdef HAVE_RINGS
-
 
 /// Our Type!
 static const n_coeffType ID = n_Z2m;
@@ -722,6 +713,7 @@ number nr2mMapQ(number from, const coeffs src, const coeffs dst)
   mpz_init(erg);
   int_number k = (int_number)omAlloc(sizeof(mpz_t));
   mpz_init_set_ui(k, dst->mod2mMask);
+  extern void   nlGMP(number &i, number n, const coeffs r); // to be replaced with n_MPZ(number n, number &i,const coeffs r)???
   nlGMP(from, (number)erg, src); // FIXME: n_MPZ(erg, from, src); // ?
   mpz_and(erg, erg, k);
   number res = (number)mpz_get_ui(erg);

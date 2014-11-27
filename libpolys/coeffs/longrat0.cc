@@ -15,12 +15,9 @@
 
 #include "coeffs.h"
 #include "numbers.h"
-
 #include "longrat.h"
 
-#ifdef HAVE_NUMSTATS
- extern void     nlNormalize(number &x, const coeffs r);
-#endif
+extern void     nlNormalize(number &x, const coeffs r); // FIXME
 
 /// Our Type!
 static const n_coeffType ID = n_Q;

@@ -7,26 +7,23 @@
 //Schauen was hier überhaupt sinn macht
 
 #include <misc/auxiliary.h>
+#include <omalloc/omalloc.h>
 
 #include <factory/factory.h>
 
-#include <string.h>
-#include <omalloc/omalloc.h>
-#include <coeffs/coeffs.h>
+#include <misc/mylimits.h>
+
 #include <reporter/reporter.h>
-#include <coeffs/numbers.h>
+
+#include "coeffs.h"
+#include "numbers.h"
+#include "mpr_complex.h"
 // #include <coeffs/longrat.h>
 // #include <coeffs/modulop.h>
-#include <coeffs/mpr_complex.h>
-#include <misc/mylimits.h>
-#include <coeffs/OPAEp.h>
-#include <coeffs/AEp.h>
+#include "OPAEp.h"
+#include "AEp.h"
 
-#ifndef HAVE_NUMSTATS
-    #include "modulop.h"  // for npSetMap
-#else
-    extern nMapFunc npSetMap(const coeffs src, const coeffs dst);
-#endif
+#include <string.h>
 
 BOOLEAN nAEpCoeffIsEqual     (number a, number b, const coeffs r);
 number  nAEpMult        (number a, number b, const coeffs r);
@@ -399,6 +396,7 @@ BOOLEAN n_pAEInitChar(coeffs r, void *p)
     r->cfLcm  = nAEpLcm; // ZU BEARBEITEN
     r->cfDelete= nAEpDelete;
 
+    extern nMapFunc npSetMap(const coeffs src, const coeffs dst); // FIXME: BUG?
     r->cfSetMap = npSetMap; // WHY??? // TODO: this seems to be a bug!
 
     r->cfInpMult=nAEpInpMult; //????

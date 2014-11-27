@@ -15,10 +15,8 @@ struct snumber; typedef struct snumber *   number;
 BOOLEAN nrInitChar(coeffs r, void*);
 
 // will be reused by gnumpc.cc and longrat.cc
-#ifndef HAVE_NUMSTATS
 /// Converts a n_R number into a float. Needed by Maps
-float   nrFloat(number n);
-#endif
+// float   nrFloat(number n);
 
 #endif
 

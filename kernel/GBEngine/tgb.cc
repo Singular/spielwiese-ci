@@ -25,7 +25,7 @@
 #include <polys/nc/sca.h>
 #include <polys/prCopy.h>
 
-#include <coeffs/longrat.h>
+#include <coeffs/longrat.h> // nlQlogSize
 // #include <coeffs/modulop.h>
 
 #include <stdlib.h>

@@ -19,15 +19,8 @@
 // #include <coeffs/modulop.h>
 #include <coeffs/mpr_complex.h>
 #include <misc/mylimits.h>
-#include <coeffs/OPAEQ.h>
+// #include <coeffs/OPAEQ.h>
 #include <coeffs/AEQ.h>
-
-#ifndef HAVE_NUMSTATS
-    #include "modulop.h"  // for npSetMap
-#else
-    extern nMapFunc npSetMap(const coeffs src, const coeffs dst);
-#endif
-
 
 
 BOOLEAN nAEQCoeffIsEqual     (number a, number b, const coeffs r);
@@ -379,6 +372,7 @@ BOOLEAN n_QAEInitChar(coeffs r, void *)
     r->cfLcm  = nAEQLcm; // ZU BEARBEITEN
     r->cfDelete= nAEQDelete;
    
+    extern nMapFunc npSetMap(const coeffs src, const coeffs dst); // FIXME: BUG?
     r->cfSetMap = npSetMap; // WHY??? // TODO: this seems to be a bug!
    
     r->cfInpMult=nAEQInpMult; //????

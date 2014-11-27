@@ -16,17 +16,6 @@
 #include "rmodulon.h" // ZnmInfo
 #include "longrat.h"
 
-#ifndef HAVE_NUMSTATS
- #include "modulop.h" // for npInt
- #include "shortfl.h" // for nrFloat
-#else
-  extern int     npInt         (number &n, const coeffs r);
-  extern float   nrFloat(number n);
-#endif
-
-
-
-
 // allow inlining only from p_Numbers.h and if ! LDEBUG
 #if defined(DO_LINLINE) && defined(P_NUMBERS_H) && !defined(LDEBUG)
 #define LINLINE static FORCE_INLINE
@@ -156,8 +145,8 @@ static inline number nlShort3(number x) // assume x->s==3
 #include <omalloc/omalloc.h>
 
 #include <coeffs/numbers.h>
-#include <coeffs/modulop.h>
-#include <coeffs/shortfl.h>
+// #include <coeffs/modulop.h>
+// #include <coeffs/shortfl.h>
 #include <coeffs/mpr_complex.h>
 
 #ifndef BYTES_PER_MP_LIMB
@@ -213,6 +202,7 @@ static number nlMapP(number from, const coeffs src, const coeffs dst)
 
   number to;
    
+  extern int     npInt         (number &n, const coeffs r); // FIXME
   to = nlInit(npInt(from,src), dst);
   return to;
 }
@@ -438,6 +428,7 @@ static number nlMapR(number from, const coeffs src, const coeffs dst)
 {
   assume( getCoeffType(src) == n_R );
 
+  extern float   nrFloat(number n); // FIXME
   double f=nrFloat(from);
   if (f==0.0) return INT_TO_SR(0);
   int f_sign=1;

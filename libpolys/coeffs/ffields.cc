@@ -14,15 +14,8 @@
 
 #include <coeffs/coeffs.h>
 #include <coeffs/numbers.h>
-#include <coeffs/ffields.h>
-
-#ifndef HAVE_NUMSTATS
-    #include "longrat.h"
-#else
-    /// Map q \in QQ \to Zp
-    extern number nlModP(number q, const coeffs Q, const coeffs Zp);
-#endif
-
+// #include <coeffs/ffields.h>
+ 
 #include <string.h>
 #include <math.h>
 #include <errno.h>
@@ -805,7 +798,10 @@ nMapFunc nfSetMap(const coeffs src, const coeffs dst)
   }
    
   if (src->rep==n_rep_gap_rat) /*Q, Z */
+  {
+    extern number nlModP(number q, const coeffs Q, const coeffs Zp); // Map q \in QQ \to Zp // FIXME!
     return nlModP;
+  }
    
   return NULL;     /* default */
 }

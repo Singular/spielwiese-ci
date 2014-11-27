@@ -6,36 +6,24 @@
 *
 * ngc == number gnu complex
 */
-
-
-
-
-
+#include <misc/auxiliary.h>
 #include <omalloc/omalloc.h>
 
-#include <misc/auxiliary.h>
 #include <misc/mylimits.h>
-
 #include <reporter/reporter.h>
 
-#include <coeffs/coeffs.h>
-#include <coeffs/numbers.h>
+#include "coeffs.h"
+#include "numbers.h"
+
+#include "mpr_complex.h"
 
 #include "gnumpc.h"
-
-#include <coeffs/longrat.h>
-#include <coeffs/mpr_complex.h>
+#include "longrat.h"
 
 
-#ifndef HAVE_NUMSTATS
-   #include "modulop.h" // for npInt
-   #include "shortfl.h" // for nrFloat
-   #include "gnumpfl.h" // for ngfRead
-#else
-    extern const char *   ngfRead (const char *s, number *a, const coeffs r);
-    extern float   nrFloat(number n);
-    extern int     npInt         (number &n, const coeffs r);
-#endif
+extern const char *   ngfRead (const char *s, number *a, const coeffs r);
+extern float   nrFloat(number n);
+extern int     npInt         (number &n, const coeffs r);
 
 
 /// Get a mapping function from src into the domain of this type: long_C!

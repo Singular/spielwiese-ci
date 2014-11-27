@@ -15,11 +15,7 @@ BOOLEAN nfInitChar(coeffs r, void*);
 
 /// Show the mininimal polynom....
 /// NOTE: this is used by char *  sleftv::String(void *d, BOOLEAN typed, int dim) (from Singular/subexpr.cc)
-/// TODO: rewrite this UGLYNESS!!! Use CoeffsString/CoeffsName?!?
-void    nfShowMipo(const coeffs r); // TODO!
-
-#ifndef HAVE_NUMSTATS
-// TODO nfShowMipo... ??? 
-#endif
+/// for printing minpoly 
+void    nfShowMipo(const coeffs r);
 
 #endif

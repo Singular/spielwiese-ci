@@ -9,16 +9,28 @@
 
 #include <misc/auxiliary.h>
 
-
-
 #include "bigintmat.h"
 #include <misc/intvec.h>
-#include <coeffs/longrat.h>
+// #include <coeffs/longrat.h>
 
+#include "rmodulon.h"
 
 #include <math.h>
 #include <string.h>
 
+///create Z/nA of type n_Zn
+static coeffs numbercoeffs(number n, coeffs c) 
+{
+  mpz_t p;
+  number2mpz(n, c, p);
+  ZnmInfo *pp = new ZnmInfo;
+  pp->base = p;
+  pp->exp = 1;
+  coeffs nc = nInitChar(n_Zn, (void*)pp);
+  mpz_clear(p);
+  delete pp;
+  return nc;
+}
 
 //#define BIMATELEM(M,I,J) (M)[ (M).index(I,J) ]
 
@@ -2434,19 +2446,6 @@ int kernbase (bigintmat *a, bigintmat *c, number p, coeffs q) {
   return c->cols();
 }
 
-
-///create Z/nA of type n_Zn
-coeffs numbercoeffs(number n, coeffs c) {
-  mpz_t p;
-  number2mpz(n, c, p);
-  ZnmInfo *pp = new ZnmInfo;
-  pp->base = p;
-  pp->exp = 1;
-  coeffs nc = nInitChar(n_Zn, (void*)pp);
-  mpz_clear(p);
-  delete pp;
-  return nc;
-}
 
 bool nCoeffs_are_equal(coeffs r, coeffs s) {
   if ((r == NULL) || (s == NULL))
