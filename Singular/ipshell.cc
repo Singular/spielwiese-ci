@@ -1303,10 +1303,10 @@ BOOLEAN iiAlias(leftv p)
          delete IDINTVEC(pp);
          break;
       case NUMBER_CMD:
-         nDelete(&IDNUMBER(pp));
+         n_Delete(&IDNUMBER(pp), currRing->cf); 
          break;
       case BIGINT_CMD:
-         n_Delete(&IDNUMBER(pp),currRing->cf);
+         n_Delete(&IDNUMBER(pp),coeffs_BIGINT); //BUG: currRing->cf);?
          break;
       case MAP_CMD:
          {
