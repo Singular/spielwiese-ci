@@ -1,8 +1,9 @@
-#include <gmp.h>
-#include <math.h>
+#include <misc/auxiliary.h>
+#include <omalloc/omalloc.h>
+
 #include "AE.h"
 
-
+#include <math.h>
 
 using namespace std;
 
