@@ -1,7 +1,6 @@
-#include <gmp.h>
-#include <math.h>
 #include "AE.h"
 
+#include <math.h>
 
 #ifdef SINGULAR_4_1
 
