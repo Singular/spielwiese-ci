@@ -1,10 +1,7 @@
 #ifndef AE_H
 #define AE_H
 
-
-#include <gmp.h>
-#include <omalloc/omalloc.h>
-
+#include "si_gmp.h"
 
 class int_poly // Klasse von int_polynomen mit Typ (Grad, Koeffizienten ganzzahlig)
 {
