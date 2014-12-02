@@ -2,46 +2,50 @@
 version="version schreyer.lib 4.0.0.0 Jun_2013 "; // $Id$
 category="General purpose";
 info="
-LIBRARY: schreyer.lib     Helpers for computing a Schreyer resolution in @code{derham.lib}
+LIBRARY: schreyer.lib     Schreyer resolution computations and helpers for @code{derham.lib}
 AUTHOR:  Oleksandr Motsak <U@D>, where U={motsak}, D={mathematik.uni-kl.de}
 KEYWORDS: Schreyer ordering; Schreyer resolution; syzygy
 OVERVIEW:
-@* The library contains helper procedures for computing a Schreyer resoltion (cf. [SFO]), 
-   originally meant to be used by @code{derham.lib} (which requires resolutions over the homogenized Weyl algebra). 
-   The library works both in the commutative and non-commutative setting (cf. [MO]). 
-   Here, we call a free resolution a Schreyer resolution if each syzygy module is given by a Groebner basis
-   with respect to the corresponding Schreyer ordering. 
-   A Schreyer resolution can be much bigger than a minimal resolution of the same module, but may be easier to construct.
-@* The input for the resolution computations is a set of vectors @code{M} in form of a module over some basering @code{R}.
-   The ring @code{R} may be non-commutative, in which case the ring ordering should be global.
-@* These procedures produce/work with partial Schreyer resolutions of @code{(R^rank(M))/M} in form of 
-   a ring (endowed with a special ring ordering that will be extended in the course of a resolution computation) 
-   containing a list of modules @code{RES} and a module @code{MRES}:
-@* The list of modules @code{RES} contains the images of maps (also called syzygy modules) substituting the
-   computed beginning of a Schreyer resolution, that is, each syzygy module is given by a Groebner basis 
-   with respect to the corresponding Schreyer ordering. 
-@* The list @code{RES} starts with a zero map given by @code{rank(M)} zero generators indicating that the image of 
-   the first differential map is zero. The second map @code{RES[2]} is given by @code{M}, which indicates that 
-   the resolution of @code{(R^rank(M))/M} is being computed.
-@* The module @code{MRES} is a direct sum of modules from @code{RES} and thus comprises all computed differentials.
+@* The library contains several procedures for computing a/part of Schreyer resoltion (cf. [SFO]),
+   and some helpers for @code{derham.lib} (which requires resolutions over the homogenized Weyl algebra) for that purpose.
+@* The input for any resolution computation is a set of vectors @code{M} in form of a module over some basering @code{R}.
+   The helpers works both in the commutative and non-commutative setting (cf. [MO]), that is the ring @code{R} may be non-commutative, 
+   in which case the ring ordering over it must be global. They produce/work with partial Schreyer resolutions of @code{(R^rank(M))/M} 
+   in form of a specially constructed ring (endowed with a special ring ordering that will be extended in the 
+   course of a resolution computation) containing a list of modules @code{RES} and a module @code{MRES}:
+@* @code{RES}: the list of modules contains the images of maps (also called syzygy modules) substituting the
+     computed beginning of a Schreyer resolution, that is, each syzygy module is given by a Groebner basis 
+     with respect to the corresponding Schreyer ordering. 
+@* @code{RES}: the list of modules which starts with a zero map given by @code{rank(M)} zero generators indicating that the image of 
+     the first differential map is zero. The second map @code{RES[2]} is given by @code{M}, which indicates that 
+     the resolution of @code{(R^rank(M))/M} is being computed.
+@* @code{MRES}: the module is a direct sum of modules from @code{RES} and thus comprises all computed differentials.
 @* Syzygies are shifted so that @code{gen(i)} is mapped to @code{MRES[i]} under the differential map.
+NOTE:
+@* Here, we call a free resolution a Schreyer resolution if each syzygy module is given by a Groebner basis
+     with respect to the corresponding Schreyer ordering. 
+@* A Schreyer resolution can be much bigger than a minimal resolution of the same module, but may be easier to construct.
 @* The Schreyer ordering succesively extends the starting module ordering on @code{M} (defined in Singular by the basering @code{R}) 
-   and is extended to higher syzygies using the following definition:
+     and is extended to higher syzygies using the following definition:
 @*        a < b if and only if (d(a) < d(b)) OR ( (d(a) = d(b) AND (comp(a) < comp(b)) ), 
-@* where @code{d(a)} is the image of a under the differential (given by @code{MRES}), 
-   and @code{comp(a)} is the module component, for any module terms @code{a} and @code{b} from the same higher syzygy module.
-REFERENCES:
-[SFO] Schreyer, F.O.: Die Berechnung von Syzygien mit dem verallgemeinerten Weierstrassschen Divisionssatz,
-      Master's thesis, Univ. Hamburg, 1980. 
-[MO]  Motsak, O.: Non-commutative Computer Algebra with applications: Graded commutative algebra and related 
-      structures in Singular with applications, Ph.D. thesis, TU Kaiserslautern, 2010
-
-NOTE:  requires the dynamic or built-in module @code{syzextra}
-
+@* where @code{d(a)} is the image of an under the differential (given by @code{MRES}),
+     and @code{comp(a)} is the module component, for any module terms @code{a} and @code{b} from the same higher syzygy module.
+NOTE: 
+@* most comutations require the dynamic or built-in module @code{syzextra}, which will be auto-leaded on demand.
 PROCEDURES:
-  Sres(M,len)     compute Schreyer resolution of module M of maximal length len
-  Ssyz(M)         compute Schreyer resolution of module M of length 1
-  Scontinue(len)  extend currently active resolution by (at most) len syszygies
+  Sres(M,len)     helper for computing Schreyer resolution of module M of maximal length len
+  Ssyz(M)         helper for computing Schreyer resolution of module M of length 1
+  Scontinue(len)  helper for extending currently active resolution by (at most) len syszygies
+  s_res(M, len)   compute Schreyer resolution of module M of maximal length len via LiftTree method from [BMSS]
+REFERENCES:
+@*
+[BMSS] Burcin, E., Motsak, O., Schreyer, F.-O., Steenpass, A.: NEW ALGORITHMS TO COMPUTE SYZYGIES, 2014. 
+@* 
+[SFO]  Schreyer, F.O.: Die Berechnung von Syzygien mit dem verallgemeinerten Weierstrassschen Divisionssatz,
+       Master's thesis, Univ. Hamburg, 1980. 
+@*
+[MO]   Motsak, O.: Non-commutative Computer Algebra with applications: Graded commutative algebra and related 
+       structures in Singular with applications, Ph.D. thesis, TU Kaiserslautern, 2010. 
 ";
 
 
@@ -471,25 +475,8 @@ example
 
 LIB "general.lib"; // for sort
 
-/* static proc Tail(def M) // DONE: in C++ (dyn. module: syzextra)!
-{
-  int i = ncols(M); def m;
-  while (i > 0)
-  {
-    m = M[i];
-    m = m - lead(m); // m = tail(m)    
-    M[i] = m;    
-    i--;
-  }
-  return (M);
-}*/
-
-/* static */
-proc MySort(def M)
-"
-   Sorts the given ideal or module wrt >_{(c, ds)}  (.<.<.<.<)
-   NOTE: inplace??
-"
+static proc MySort(def M)
+" Sorts the given ideal or module wrt >_{(c, ds)}  (.<.<.<.<) "
 {
   if( typeof( attrib(basering, "DEBUG") ) == "int" )
   {
@@ -840,7 +827,7 @@ LIB "poly.lib"; // for lcm
 
 
 /// Compute L(Syz(L))
-proc SSComputeLeadingSyzygyTerms(def L)
+static proc SSComputeLeadingSyzygyTerms(def L)
 {
   if( typeof( attrib(basering, "DEBUG") ) == "int" )
   {
@@ -959,7 +946,7 @@ proc SSComputeLeadingSyzygyTerms(def L)
 }
 
 /// Compute Syz(L), where L is a monomial (leading) module
-proc SSCompute2LeadingSyzygyTerms(def L)
+static proc SSCompute2LeadingSyzygyTerms(def L)
 {
   if( typeof( attrib(basering, "DEBUG") ) == "int" )
   {
@@ -1182,7 +1169,7 @@ proc SSCompute2LeadingSyzygyTerms(def L)
 // -------------------------------------------------------- //
 
 /// TODO: save shortcut (syz: |-.->) LM(LM(m) * "t") -> syz?
-proc SSFindReducer(def product, def syzterm, def L, list #)
+static proc SSFindReducer(def product, def syzterm, def L, list #)
 {
   if( typeof( attrib(basering, "DEBUG") ) == "int" )
   {
@@ -1313,7 +1300,7 @@ proc SSFindReducer(def product, def syzterm, def L, list #)
 }
 
 /// TODO: save shortcut (syz: |-.->) LM(m) * "t" -> ?
-proc SSReduceTerm(poly m, def t, def syzterm, def L, def T, list #)
+static proc SSReduceTerm(poly m, def t, def syzterm, def L, def T, list #)
 {
   if( typeof( attrib(basering, "DEBUG") ) == "int" )
   {
@@ -1423,7 +1410,7 @@ proc SSReduceTerm(poly m, def t, def syzterm, def L, def T, list #)
 
 
 // TODO: store m * @tail -.-^-.-^-.--> ?
-proc SSTraverseTail(poly m, def @tail, def L, def T, list #)
+static proc SSTraverseTail(poly m, def @tail, def L, def T, list #)
 {
   if( typeof( attrib(basering, "DEBUG") ) == "int" )
   {
@@ -1498,13 +1485,9 @@ proc SSTraverseTail(poly m, def @tail, def L, def T, list #)
 
 // -------------------------------------------------------- //
 
-proc SSSchreyerSyzygyNF(vector syz_lead, vector syz_2, def L, def T, list #)
-"
-   Hybrid Syzygy computation: 'reduce' spoly by eliminating _any_ terms
-   while discurding terms of lower order!
-
-   Return the tail syzygy (without: syz_lead, starting with: syz_2)
-"
+static proc SSSchreyerSyzygyNF(vector syz_lead, vector syz_2, def L, def T, list #)
+"  Hybrid Syzygy computation: 'reduce' spoly by eliminating _any_ terms while discurding terms of lower order!
+   Return the tail syzygy (without: syz_lead, starting with: syz_2)"
 {
   if( typeof( attrib(basering, "DEBUG") ) == "int" )
   {
@@ -1597,7 +1580,7 @@ proc SSSchreyerSyzygyNF(vector syz_lead, vector syz_2, def L, def T, list #)
 
 // module (N, LL, TT) = SSComputeSyzygy(L, T);
 // Compute Syz(L ++ T) = N = LL ++ TT
-proc SSComputeSyzygy(def L, def T)
+static proc SSComputeSyzygy(def L, def T)
 {
 //  rtimer, "***TIMESNAP0 for ComputeSyzygy(L,T): on level: [",attrib(basering,"SYZNUMBER"),"] :: t: ", timer, ", r: ", rtimer;
   int @DEBUG    = attrib(basering, "DEBUG");
@@ -1958,7 +1941,7 @@ static proc SSstep()
 //  rtimer, "***TIMESNAP1 for SSstep(): on level: [",attrib(basering,"SYZNUMBER"),"] :: t: ", timer, ", r: ", rtimer;
 }
 
-proc SScontinue(int l)
+static proc SScontinue(int l)
 "USAGE:  SScontinue(l)
 RETURN:  nothing, instead it changes RES and MRES variables in the current ring
 PURPOSE: computes further (at most l) syzygies 
@@ -1996,7 +1979,7 @@ example
   RES; MRES;
 }
 
-proc SSsyz(def M)
+static proc SSsyz(def M)
 "USAGE:  SSsyz(M)
 RETURN:  ring, containing a list of modules RES and a module MRES
 PURPOSE: computes the first syzygy module of M (wrt some Schreyer ordering)?
@@ -2053,7 +2036,7 @@ example
   RES;
 }
 
-proc SSres(def M, int l)
+static proc SSres(def M, int l)
 "USAGE:  SSres(I, l)
 RETURN:  ring, containing a list of modules RES and a module MRES
 PURPOSE: computes (at most l) syzygy modules of M wrt the classical Schreyer
@@ -2122,18 +2105,6 @@ example
   def S = SSres(M, 0); setring S; S;
   RES;
   MRES;
-  kill S;
-  setring r; kill M;
-
-  def A = nc_algebra(-1,0); setring A;
-  ideal Q = var(1)^2, var(2)^2, var(3)^2;
-  qring SCA = twostd(Q);
-  basering;
-
-  module M = maxideal(1);
-  def S = SSres(M, 2); setring S; S;
-  RES;
-  MRES;
 }
 
 static proc SRES_betti2(SRES SR, def a)
@@ -2156,7 +2127,9 @@ static proc SRES_print(SRES SR)
   "over the ring: "; R;
 }
 
+// cannot be automatically used via overloading :(
 proc SRES_list(SRES SR)
+"TODO!"
 {
   def save = basering;  
   def R = SR.r;
@@ -2262,7 +2235,6 @@ static proc loadme()
       exportto(Schreyer, Syzextra::NumberStatsPrint);
 
       newstruct("SRES","ring r,resolution rsltn"); // http://www.singular.uni-kl.de/Manual/latest/sing_179.htm#SEC218
-      newstruct("SSYZ","ring r,module szg"); // http://www.singular.uni-kl.de/Manual/latest/sing_179.htm#SEC218
       // TODO: SSres - return SRESOLUTION?
 
 //      system("install","SRES","string",SRES_string, 1);
@@ -2275,6 +2247,7 @@ static proc loadme()
 //      system("install","SRES","list", SRES_list, 1); // will never work :(((
       
       // TODO: SSsyz? SSYZYGY? // TODO: C/C++ computation for Syzygy?
+//      newstruct("SSYZ","ring r,module szg"); // http://www.singular.uni-kl.de/Manual/latest/sing_179.htm#SEC218
 //      system("install","SSYZYGY","string",SSYZYGY_string, 1);
 //      system("install","SSYZYGY","print",SSYZYGY_print, 1);
 //      system("install","SSYZYGY","module",SSYZYGY_module, 1);
@@ -2311,27 +2284,26 @@ static proc mod_init()
 }
 
 
-proc testallSexamples()
+static proc testallSexamples()
 {
   example Ssyz;
   example Scontinue;
   example Sres;  
 }
 
-proc testallSSexamples()
+static proc testallSSexamples()
 {
   example SSsyz;
   example SScontinue;
   example SSres;  
 }
-
 example
 { "EXAMPLE:"; echo = 2;
   testallSexamples();
   testallSSexamples();
 }
 
-/*static*/ proc  StartResTesting(list #)
+static proc  StartResTesting(list #)
 {
   int @treeout = attrib(SSinit, "TREEOUTPUT");
   
@@ -2353,7 +2325,7 @@ example
   export @save_res_desc;
 }
 
-/*static*/ proc  StopResTesting()
+static proc  StopResTesting()
 {
   int @treeout = attrib(SSinit, "TREEOUTPUT");
   
@@ -2445,7 +2417,7 @@ example
   kill @save_res_desc;
 }
 
-/*static*/ proc StartAddResTest(string method, string desc)
+static proc StartAddResTest(string method, string desc)
 {
   int @treeout = attrib(SSinit, "TREEOUTPUT");
   
@@ -2472,7 +2444,7 @@ example
 }
 
 
-/*static*/ proc StopAddResTest(def RR, intmat S, int @t, int @m)
+static proc StopAddResTest(def RR, intmat S, int @t, int @m)
 {
   int @treeout = attrib(SSinit, "TREEOUTPUT");
   
@@ -2501,7 +2473,7 @@ example
 }
 
 
-/*static*/ proc SCheck(def S)
+static proc SCheck(def S)
 {
   setring S; // for checking...
 
@@ -2552,8 +2524,9 @@ example
   TRES;
 */  
 }
+
 //// TODO: SSres(0) fails..!!!??
-proc TestSSres(def I)
+static proc TestSSres(def I)
 {
   def save = basering;
   int @t,@m,r,rr,i;
@@ -2582,8 +2555,17 @@ proc TestSSres(def I)
 }
 
 proc s_res(def I, int l)
+"USAGE:  s_res(M, len)
+RETURN:  SRES, a blackbox object with a Schreyer resolution
+PURPOSE: computes a Schreyer resolution of M of length at most len (see [BMSS])
+NOTE:    If given len is zero then nvars(basering) + 1 is used instead.
+@* SRES can be printed, treated by betti and minres or converted to list & mapped into the current ring with @code{SRES_list}
+@* This functions is not related to other helpers from this library.
+SEE ALSO: sres
+EXAMPLE: example s_res; shows an example
+"
 {
-  int @prot = (find(option(),"prot") != 0);
+  int @prot = (find(option(),"prot") != 0) && (defined(NumberStatsInit)) && (defined(NumberStatsPrint));
   def R=SSinit(I); setring R; int @l = size(RES);
   SRES ret; ret.r = R; 
   if(@prot){ NumberStatsInit(); }
@@ -2591,8 +2573,19 @@ proc s_res(def I, int l)
   if(@prot){ NumberStatsPrint("Number statistic for s_res with ComputeResolution"); }
   return (ret);
 }
+example
+{ "EXAMPLE:"; echo = 2;
+  ring R;
+  module M = maxideal(1); M;
+  SRES rs = s_res(M, 0); 
+  print(rs);
+  print(betti(rs, 0)); // non-minimal betties
+  print(SRES_list(rs));
+  print(betti(rs, 1)); //minimal betties
+  print(minres(rs));
+}
 
-proc s_syz(def I)
+static proc s_syz(def I)
 {
   def R=SSinit(I); setring R;
   int @l = size(RES); //   def M =  RES[@l];
@@ -2601,7 +2594,7 @@ proc s_syz(def I)
   return (ret);
 }
 
-proc TestSSSres(def I)
+static proc TestSSSres(def I)
 {
   def save = basering;
   int @t,@m,r,rr,i;
@@ -2631,7 +2624,7 @@ RR=minres(RR);def S=betti(RR,1);@t=rtimer;
 }
 
 
-proc TestSres(def I)
+static proc TestSres(def I)
 {
   def save = basering;
   int @t,r,rr,i,@m;
@@ -2647,7 +2640,7 @@ proc TestSres(def I)
 }
 
 
-proc Testsres(def M)
+static proc Testsres(def M)
 {
   int @t,@m;
   StartAddResTest("sres", "no minres + betti(,1)");
@@ -2656,7 +2649,7 @@ proc Testsres(def M)
   StopAddResTest(RR, S, @t,@m); kill S, RR;
 }
 
-proc Testlres(def M)
+static proc Testlres(def M)
 {
   int @t,@m; 
   StartAddResTest("lres", "no minres + betti(,1)");
@@ -2672,7 +2665,7 @@ proc Testlres(def M)
 }
 
 
-proc Testnres(def M)
+static proc Testnres(def M)
 {
   int @t,@m;
   StartAddResTest("nres", "no minres + betti(,1)");
@@ -2683,7 +2676,7 @@ proc Testnres(def M)
   StopAddResTest(RR, S, @t,@m); kill S, RR;
 }
 
-proc TestSSresAttribs(def M, list #)
+static proc TestSSresAttribs(def M, list #)
 {
   StartResTesting(#);
   int @treeout = attrib(SSinit, "TREEOUTPUT");
@@ -2721,7 +2714,7 @@ proc TestSSresAttribs(def M, list #)
 }
 
 
-proc TestSSresAttribs2tr(def M, list #)
+static proc TestSSresAttribs2tr(def M, list #)
 {
   StartResTesting(#);
   
@@ -2742,8 +2735,7 @@ proc TestSSresAttribs2tr(def M, list #)
   StopResTesting();
 }
 
-
-proc testSimple(list #)
+static proc testSimple(list #)
 {
   mod_assure_load();
 
@@ -2821,7 +2813,7 @@ proc testSimple(list #)
 
 }
 
-proc testAGR(list #)
+static proc testAGR(list #)
 {
   def DEBUG = 0;
   if(size(#) > 0) { DEBUG = #[1]; }
@@ -3014,7 +3006,7 @@ b*d-13*c*d+7*a*e-32*b*e+31*c*e+3*d*e+46*a*f-13*b*f+22*c*f-19*d*f-33*e*f, a*d+2*c
  kill M;
 }
 
-proc testAGRhard(list #)
+static proc testAGRhard(list #)
 {
   def DEBUG = 0;
   if(size(#) > 0) { DEBUG = #[1]; }
@@ -3045,7 +3037,7 @@ b*d+47*c*d-27*a*e+37*b*e+21*c*e+31*d*e-31*a*f+23*b*f+47*c*f+42*d*f+11*e*f, a*d+7
 
 
 /*
-proc testAGRFrame()
+static proc testAGRFrame()
 {
   system("--min-time", "0.01");
   system("--ticks-per-sec", 100);
