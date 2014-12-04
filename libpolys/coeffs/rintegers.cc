@@ -329,7 +329,8 @@ number nrzMapQ(number from, const coeffs src, const coeffs /*dst*/)
 {
   mpz_ptr erg = (mpz_ptr) omAllocBin(gmp_nrz_bin);
   mpz_init(erg);
-  nlGMP(from, (number) erg, src);
+  extern void   nlGMP(number &i, number n, const coeffs r); // to be replaced with n_MPZ(number n, number &i,const coeffs r)???
+  nlGMP(from, (number) erg, src); // FIXME: n_MPZ(erg, from, src); // ?
   return (number) erg;
 }
 
